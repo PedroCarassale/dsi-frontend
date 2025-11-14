@@ -1,5 +1,6 @@
 import { Bell, Home, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
+import { Link, useLocation } from "react-router-dom";
 
 function Header() {
   return (
@@ -9,9 +10,33 @@ function Header() {
           {/* Logo y título */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <Home className="h-6 w-6 text-blue-600" />
-              <span className="ml-3 text-lg font-semibold text-gray-900">Interfaz de usuario DSI</span>
+              <Link to="/" className="flex items-center">
+                <Home className="h-6 w-6 text-blue-600" />
+                <span className="ml-3 text-lg font-semibold text-gray-900">Interfaz de usuario DSI</span>
+              </Link>
             </div>
+            
+            {/* Navegación */}
+            <nav className="ml-10 flex items-baseline space-x-8">
+              <Link
+                to="/memorias-anuales"
+                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Memorias Anuales
+              </Link>
+              <Link
+                to="/registros-patentes"
+                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Registros y Patentes
+              </Link>
+              <Link
+                to="/trabajos-publicados"
+                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Trabajos Publicados
+              </Link>
+            </nav>
           </div>
 
           {/* Navegación derecha */}
