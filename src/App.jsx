@@ -3,7 +3,7 @@ import "./App.css";
 import Home from "./pages/Home";
 import MemoriasAnuales from "./pages/memorias-anuales/MemoriasAnuales";
 import RegistrosPatentes from "./pages/registros-patentes/RegistrosPatentes";
-import TrabajosPublicados from "./pages/trabajos-publicados/index";
+import TrabajosPublicados from "./pages/trabajos-publicados/TrabajosPublicados";
 import AppLayout from "../components/AppLayout";
 
 function App() {
