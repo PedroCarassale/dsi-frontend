@@ -1,7 +1,15 @@
-import { FileText, BookOpen, Shield, TrendingUp, ArrowRight, Calendar, Users } from "lucide-react";
-import { Button } from "../../components/ui/button";
+import {
+  FileText,
+  BookOpen,
+  Shield,
+  TrendingUp,
+  ArrowRight,
+  Calendar,
+  Users,
+} from "lucide-react";
+import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useNotifications } from "../context/NotificationContext";
+import { useNotifications } from "../../context/NotificationContext";
 
 function Home() {
   const navigate = useNavigate();
@@ -32,7 +40,9 @@ function Home() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Memoria Anual</p>
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Memoria Anual
+            </p>
             <p className="text-3xl font-bold text-gray-900 mb-1">2025</p>
             <p className="text-sm text-gray-500">En Progreso</p>
           </div>
@@ -46,7 +56,9 @@ function Home() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Publicaciones</p>
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Publicaciones
+            </p>
             <p className="text-3xl font-bold text-gray-900 mb-1">47</p>
             <p className="text-sm text-gray-500">+12 este año</p>
           </div>
@@ -83,14 +95,18 @@ function Home() {
 
       {/* Módulos de Gestión */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Módulos de Gestión</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+          Módulos de Gestión
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Memoria Anual */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
               <FileText className="w-6 h-6 text-blue-600" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Memoria Anual</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Memoria Anual
+            </h3>
             <p className="text-gray-600 text-sm mb-4">
               Crear y gestionar la memoria anual del grupo de investigación
             </p>
@@ -98,10 +114,10 @@ function Home() {
               <p className="text-sm text-gray-500">Última actualización</p>
               <p className="text-sm font-medium">Hace 2 días</p>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full flex items-center justify-center gap-2"
-              onClick={() => navigate('/memorias-anuales')}
+              onClick={() => navigate("/memorias-anuales")}
             >
               Gestionar Memoria
               <ArrowRight className="w-4 h-4" />
@@ -113,7 +129,9 @@ function Home() {
             <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mb-4">
               <BookOpen className="w-6 h-6 text-cyan-600" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Trabajos Publicados</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Trabajos Publicados
+            </h3>
             <p className="text-gray-600 text-sm mb-4">
               Administrar publicaciones, artículos y trabajos realizados
             </p>
@@ -121,10 +139,10 @@ function Home() {
               <p className="text-sm text-gray-500">Total publicaciones</p>
               <p className="text-sm font-medium">47 trabajos</p>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full flex items-center justify-center gap-2"
-              onClick={() => navigate('/trabajos-publicados')}
+              onClick={() => navigate("/trabajos-publicados")}
             >
               Ver Publicaciones
               <ArrowRight className="w-4 h-4" />
@@ -136,7 +154,9 @@ function Home() {
             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
               <Shield className="w-6 h-6 text-green-600" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Registros y Patentes</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Registros y Patentes
+            </h3>
             <p className="text-gray-600 text-sm mb-4">
               Gestionar patentes, registros y propiedad intelectual
             </p>
@@ -144,10 +164,10 @@ function Home() {
               <p className="text-sm text-gray-500">Patentes activas</p>
               <p className="text-sm font-medium">8 registros</p>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full flex items-center justify-center gap-2"
-              onClick={() => navigate('/registros-patentes')}
+              onClick={() => navigate("/registros-patentes")}
             >
               Ver Patentes
               <ArrowRight className="w-4 h-4" />
@@ -158,16 +178,18 @@ function Home() {
 
       {/* Actividad Reciente */}
       <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Actividad Reciente</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+          Actividad Reciente
+        </h2>
         <div className="space-y-4">
           {recentActivities.map((activity) => {
             const getActivityIcon = () => {
               switch (activity.type) {
-                case 'publicacion':
+                case "publicacion":
                   return <BookOpen className="h-6 w-6 text-cyan-600" />;
-                case 'patente':
+                case "patente":
                   return <Shield className="h-6 w-6 text-green-600" />;
-                case 'memoria':
+                case "memoria":
                   return <FileText className="h-6 w-6 text-blue-600" />;
                 default:
                   return <FileText className="h-6 w-6 text-gray-600" />;
@@ -176,19 +198,19 @@ function Home() {
 
             const getActivityBgColor = () => {
               switch (activity.type) {
-                case 'publicacion':
-                  return 'bg-cyan-100 border-cyan-200';
-                case 'patente':
-                  return 'bg-green-100 border-green-200';
-                case 'memoria':
-                  return 'bg-blue-100 border-blue-200';
+                case "publicacion":
+                  return "bg-cyan-100 border-cyan-200";
+                case "patente":
+                  return "bg-green-100 border-green-200";
+                case "memoria":
+                  return "bg-blue-100 border-blue-200";
                 default:
-                  return 'bg-gray-100 border-gray-200';
+                  return "bg-gray-100 border-gray-200";
               }
             };
 
             return (
-              <div 
+              <div
                 key={activity.id}
                 className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => navigate(activity.link)}
@@ -196,14 +218,20 @@ function Home() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-4 flex-1">
                     <div className="flex-shrink-0">
-                      <div className={`p-3 rounded-lg border ${getActivityBgColor()}`}>
+                      <div
+                        className={`p-3 rounded-lg border ${getActivityBgColor()}`}
+                      >
                         {getActivityIcon()}
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-1">{activity.title}</h4>
-                      <p className="text-sm text-gray-600 mb-2">{activity.message}</p>
-                      
+                      <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                        {activity.title}
+                      </h4>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {activity.message}
+                      </p>
+
                       <div className="flex items-center gap-4 text-sm text-gray-500">
                         <div className="flex items-center">
                           <Calendar className="h-4 w-4 mr-1" />
