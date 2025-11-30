@@ -1,12 +1,17 @@
-import { Plus, Search, Home, BookOpen, Users, Calendar, Eye } from "lucide-react";
+import { Plus, Search, Home, BookOpen, Users, Calendar, Eye, MoreVertical } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DetallePublicacion from "./DetallePublicacion";
+import ModalPublicacionForm from "./ModalPublicacionForm";
 
 function TrabajosPublicados() {
+  const navigate = useNavigate();
+  
   // Estados
   const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
+  const [showNewModal, setShowNewModal] = useState(false);
   
   // Datos mock
   const [publicaciones, setPublicaciones] = useState([
@@ -40,6 +45,22 @@ function TrabajosPublicados() {
     setPublicacionSeleccionada(null);
   };
 
+  const handleNuevaPublicacion = () => {
+    setShowNewModal(true);
+  };
+
+  const handleSaveNewPublicacion = (formData) => {
+    const newId = Math.max(...publicaciones.map(p => p.id)) + 1;
+    const nuevaPublicacion = {
+      ...formData,
+      id: newId,
+      authors: formData.autoresList.length
+    };
+    
+    setPublicaciones(prev => [...prev, nuevaPublicacion]);
+    setShowNewModal(false);
+  };
+
   // Si hay una publicación seleccionada, mostrar el detalle
   if (publicacionSeleccionada) {
     return (
@@ -64,15 +85,13 @@ function TrabajosPublicados() {
     <>
       {/* Header con breadcrumb */}
       <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-500 mb-6">
-          <Home className="h-4 w-4 mr-1" />
-          <span className="mx-1">/</span>
-          <BookOpen className="h-4 w-4 mr-1" />
-          <span>Trabajos Publicados</span>
-        </div>
-        
-        {/* Título con ícono de fondo */}
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-3 mb-4">
+          <button 
+            onClick={() => navigate('/')}
+            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+          >
+            <Home className="h-5 w-5 text-gray-600" />
+          </button>
           <div className="bg-cyan-100 p-2.5 rounded-lg border border-cyan-200">
             <BookOpen className="h-5 w-5 text-cyan-600" />
           </div>
@@ -91,7 +110,10 @@ function TrabajosPublicados() {
             />
           </div>
           
-          <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
+          <Button 
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+            onClick={handleNuevaPublicacion}
+          >
             <Plus className="h-4 w-4" />
             Nueva Publicación
           </Button>
@@ -137,6 +159,12 @@ function TrabajosPublicados() {
         </div>
       </div>
 
+      {/* Título de sección */}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">Lista de Publicaciones y Artículos</h3>
+        <span className="text-sm text-gray-500">{publicaciones.length} publicaciones</span>
+      </div>
+
       {/* Lista de publicaciones */}
       <div className="space-y-4">
         {publicaciones.map((pub) => (
@@ -165,20 +193,34 @@ function TrabajosPublicados() {
 
               {/* Botones de acción */}
               <div className="flex items-center gap-2 ml-4">
-                <Button
-                  variant="outline"
-                  size="sm"
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                   onClick={() => handleVerDetalle(pub)}
-                  className="flex items-center gap-2"
                 >
-                  <Eye className="h-4 w-4" />
+                  <Eye className="h-4 w-4 mr-2" />
                   Ver Detalles
                 </Button>
+                
+                {/* Botón de más opciones */}
+                <button className="text-gray-400 hover:text-gray-600 p-1 rounded">
+                  <MoreVertical className="h-5 w-5" />
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal para nueva publicación */}
+      <ModalPublicacionForm
+        isOpen={showNewModal}
+        onClose={() => setShowNewModal(false)}
+        onSave={handleSaveNewPublicacion}
+        publicacion={null}
+        isEditing={false}
+      />
     </>
   );
 }

@@ -2,11 +2,14 @@ import { Plus, Search, Home, FolderOpen, FileText, CheckCircle, Clock, TrendingU
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DetalleMemoria from "./DetalleMemoria";
 import EditarMemoria from "./EditarMemoria";
 import NuevaMemoria from "./NuevaMemoria";
 
 function MemoriasAnuales() {
+  const navigate = useNavigate();
+  
   // Datos mock según el Figma
   const [memorias, setMemorias] = useState([
     {
@@ -135,9 +138,12 @@ function MemoriasAnuales() {
       {/* Sección de título con breadcrumb */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="bg-gray-100 p-2.5 rounded-lg border border-gray-200">
+          <button 
+            onClick={() => navigate('/')}
+            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+          >
             <Home className="h-5 w-5 text-gray-600" />
-          </div>
+          </button>
           <div className="bg-cyan-100 p-2.5 rounded-lg border border-cyan-200">
             <FolderOpen className="h-5 w-5 text-cyan-600" />
           </div>

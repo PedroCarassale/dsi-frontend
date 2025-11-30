@@ -59,11 +59,13 @@ function ModalPublicacionForm({ isOpen, onClose, onSave, publicacion, isEditing 
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Título <span className="text-red-500">*</span>
               </label>
-              <Input
+              <textarea
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
                 placeholder="Título de la publicación"
                 required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y"
+                rows={3}
               />
             </div>
 

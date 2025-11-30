@@ -1,12 +1,15 @@
-import { Plus, Search, Home, Shield, Calendar, Eye, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { Plus, Search, Home, Shield, Calendar, Eye, MoreVertical, Edit, Trash2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DetallePatente from "./DetallePatente";
 import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 import ModalPatenteForm from "./ModalPatenteForm";
 
 function RegistrosPatentes() {
+  const navigate = useNavigate();
+  
   // Datos mock según el Figma
   const [patentes, setPatentes] = useState([
     {
@@ -136,15 +139,13 @@ function RegistrosPatentes() {
     <>
       {/* Sección de título con breadcrumb */}
       <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-500 mb-6">
-          <Home className="h-4 w-4 mr-1" />
-          <span className="mx-1">/</span>
-          <Shield className="h-4 w-4 mr-1" />
-          <span>Registros y Patentes</span>
-        </div>
-        
-        {/* Título con ícono de fondo */}
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-3 mb-4">
+          <button 
+            onClick={() => navigate('/')}
+            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+          >
+            <Home className="h-5 w-5 text-gray-600" />
+          </button>
           <div className="bg-green-100 p-2.5 rounded-lg border border-green-200">
             <Shield className="h-5 w-5 text-green-600" />
           </div>
@@ -260,7 +261,7 @@ function RegistrosPatentes() {
                       toggleMenu(patente.id);
                     }}
                   >
-                    <MoreHorizontal className="h-5 w-5" />
+                    <MoreVertical className="h-5 w-5" />
                   </button>
                   
                   {/* Menú desplegable */}
