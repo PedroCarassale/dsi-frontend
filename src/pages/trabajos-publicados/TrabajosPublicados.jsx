@@ -1,41 +1,35 @@
 import { Plus, Search, Home, BookOpen, Users, Calendar, Eye, MoreVertical } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getTrabajos, deleteTrabajo } from "../../store/slices/trabajos/trabajosActions";
+import {
+  getTrabajos as getTrabajosSelector,
+  getTrabajosLoading,
+  getTrabajosError,
+} from "../../store/slices/trabajos/trabajosSelector";
 import DetallePublicacion from "./DetallePublicacion";
 import ModalPublicacionForm from "./ModalPublicacionForm";
 
 function TrabajosPublicados() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Redux state
+  const publicaciones = useSelector(getTrabajosSelector);
+  const loading = useSelector(getTrabajosLoading);
+  const error = useSelector(getTrabajosError);
+
+  // Cargar trabajos al montar el componente
+  useEffect(() => {
+    dispatch(getTrabajos());
+  }, [dispatch]);
   
   // Estados
   const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
   const [showNewModal, setShowNewModal] = useState(false);
-  
-  // Datos mock
-  const [publicaciones, setPublicaciones] = useState([
-    {
-      id: 1,
-      title: "Machine Learning Applications in Healthcare",
-      journal: "Journal of Medical AI",
-      type: "Artículo",
-      authors: 3,
-      year: 2025,
-      issn: "2234-5678",
-      autoresList: ["Dr. García", "Dr. Martínez", "Dr. López"]
-    },
-    {
-      id: 2,
-      title: "Deep Learning for Medical Imaging",
-      journal: "Medical Imaging Review", 
-      type: "Capítulo de libro",
-      authors: 2,
-      year: 2025,
-      issn: "1234-5678",
-      autoresList: ["Dr. Rodríguez", "Dr. Fernández"]
-    }
-  ]);
 
   const handleVerDetalle = (publicacion) => {
     setPublicacionSeleccionada(publicacion);
@@ -50,16 +44,27 @@ function TrabajosPublicados() {
   };
 
   const handleSaveNewPublicacion = (formData) => {
-    const newId = Math.max(...publicaciones.map(p => p.id)) + 1;
-    const nuevaPublicacion = {
-      ...formData,
-      id: newId,
-      authors: formData.autoresList.length
-    };
-    
-    setPublicaciones(prev => [...prev, nuevaPublicacion]);
-    setShowNewModal(false);
+    // El manejo de crear/actualizar ahora se hace en el modal
+    // que hace el dispatch directamente
   };
+
+  // Mostrar loading
+  if (loading && publicaciones.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500">Cargando trabajos...</div>
+      </div>
+    );
+  }
+
+  // Mostrar error
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
 
   // Si hay una publicación seleccionada, mostrar el detalle
   if (publicacionSeleccionada) {
@@ -67,16 +72,7 @@ function TrabajosPublicados() {
       <DetallePublicacion 
         publicacion={publicacionSeleccionada} 
         onBack={handleVolver}
-        onDelete={(publicacion) => {
-          setPublicaciones(publicaciones.filter(p => p.id !== publicacion.id));
-          setPublicacionSeleccionada(null);
-        }}
-        onUpdate={(updatedPublicacion) => {
-          setPublicaciones(publicaciones.map(p => 
-            p.id === updatedPublicacion.id ? updatedPublicacion : p
-          ));
-          setPublicacionSeleccionada(updatedPublicacion);
-        }}
+        onUpdateSelected={setPublicacionSeleccionada}
       />
     );
   }
@@ -138,7 +134,7 @@ function TrabajosPublicados() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-500">Este Año</p>
-              <p className="text-2xl font-bold text-gray-900">{publicaciones.filter(p => p.year === 2025).length}</p>
+              <p className="text-2xl font-bold text-gray-900">{publicaciones.filter(p => p.year === new Date().getFullYear()).length}</p>
             </div>
             <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
               <Calendar className="w-4 h-4 text-green-600" />
@@ -177,7 +173,7 @@ function TrabajosPublicados() {
                 <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
                   <div className="flex items-center">
                     <Users className="h-4 w-4 mr-1" />
-                    {pub.authors} autores
+                    {pub.authors?.length || 0} autores
                   </div>
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
@@ -187,7 +183,7 @@ function TrabajosPublicados() {
 
                 {/* Badge del tipo */}
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  {pub.type}
+                  {pub.type === 'article' ? 'Artículo' : pub.type === 'book' ? 'Libro' : pub.type === 'book_chapter' ? 'Capítulo de libro' : pub.type}
                 </span>
               </div>
 

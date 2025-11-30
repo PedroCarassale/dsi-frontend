@@ -1,29 +1,80 @@
 import { X } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createTrabajo,
+  updateTrabajo,
+  getTrabajos,
+} from "../../store/slices/trabajos/trabajosActions";
+import { getTrabajosLoading } from "../../store/slices/trabajos/trabajosSelector";
 
-function ModalPublicacionForm({ isOpen, onClose, onSave, publicacion, isEditing = false }) {
+function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false }) {
+  const dispatch = useDispatch();
+  const loading = useSelector(getTrabajosLoading);
+
   const [formData, setFormData] = useState({
     title: publicacion?.title || '',
     journal: publicacion?.journal || '',
-    type: publicacion?.type || 'Artículo',
+    type: publicacion?.type || 'article',
     issn: publicacion?.issn || '',
     year: publicacion?.year || new Date().getFullYear(),
-    autoresList: publicacion?.autoresList?.join(', ') || ''
+    autoresList: publicacion?.authors?.join(', ') || ''
   });
+
+  // Actualizar formData cuando cambie la publicación
+  useEffect(() => {
+    if (publicacion) {
+      setFormData({
+        title: publicacion.title || '',
+        journal: publicacion.journal || '',
+        type: publicacion.type || 'article',
+        issn: publicacion.issn || '',
+        year: publicacion.year || new Date().getFullYear(),
+        autoresList: publicacion.authors?.join(', ') || ''
+      });
+    } else {
+      setFormData({
+        title: '',
+        journal: '',
+        type: 'article',
+        issn: '',
+        year: new Date().getFullYear(),
+        autoresList: ''
+      });
+    }
+  }, [publicacion, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Procesar los autores y preparar los datos para la API
     const processedData = {
-      ...formData,
-      autoresList: formData.autoresList.split(',').map(autor => autor.trim()),
-      authors: formData.autoresList.split(',').length
+      title: formData.title,
+      journal: formData.journal,
+      type: formData.type,
+      issn: formData.issn,
+      year: formData.year,
+      authors: formData.autoresList.split(',').map(autor => autor.trim()).filter(autor => autor)
     };
-    onSave(processedData);
-    onClose();
+
+    try {
+      if (isEditing && publicacion) {
+        await dispatch(updateTrabajo({ id: publicacion.id, ...processedData })).unwrap();
+      } else {
+        await dispatch(createTrabajo(processedData)).unwrap();
+      }
+
+      // Recargar los trabajos después de crear o actualizar
+      await dispatch(getTrabajos());
+      
+      onClose();
+    } catch (error) {
+      console.error("Error al guardar el trabajo:", error);
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -94,10 +145,9 @@ function ModalPublicacionForm({ isOpen, onClose, onSave, publicacion, isEditing 
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
-                  <option value="Artículo">Artículo</option>
-                  <option value="Capítulo de libro">Capítulo de libro</option>
-                  <option value="Libro">Libro</option>
-                  <option value="Conferencia">Conferencia</option>
+                  <option value="article">Artículo</option>
+                  <option value="book_chapter">Capítulo de libro</option>
+                  <option value="book">Libro</option>
                 </select>
               </div>
               <div>
@@ -149,8 +199,12 @@ function ModalPublicacionForm({ isOpen, onClose, onSave, publicacion, isEditing 
             >
               Cancelar
             </Button>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              {isEditing ? 'Actualizar Publicación' : 'Guardar Publicación'}
+            <Button 
+              type="submit" 
+              className="bg-blue-600 hover:bg-blue-700"
+              disabled={loading}
+            >
+              {loading ? 'Guardando...' : isEditing ? 'Actualizar Publicación' : 'Guardar Publicación'}
             </Button>
           </div>
         </form>
