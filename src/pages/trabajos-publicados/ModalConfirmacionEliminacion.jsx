@@ -1,7 +1,7 @@
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 
-function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacionTitle }) {
+function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacion }) {
   if (!isOpen) return null;
 
   return (
@@ -9,39 +9,29 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacionT
       <div className="bg-white rounded-lg max-w-md mx-4 w-full shadow-2xl border border-gray-200">
         {/* Header del modal */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-gray-900">
-              Eliminar Publicación
-            </h3>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
+          <h3 className="text-lg font-semibold text-gray-900">Eliminar Publicación</h3>
         </div>
 
         {/* Contenido del modal */}
-        <div className="p-6">
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <AlertTriangle className="h-6 w-6 text-red-600" />
+        <div className="px-6 py-6">
+          <div className="flex flex-col items-center">
+            {/* Icono de peligro */}
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle className="w-8 h-8 text-red-600" />
             </div>
-            <div className="flex-1">
-              <p className="text-sm text-gray-700 leading-relaxed">
-                ¿Estás seguro de que deseas eliminar la publicación 
-                <span className="font-semibold"> "{publicacionTitle}"</span>?
+            <p className="text-gray-700 text-center text-lg">
+              ¿Seguro desea eliminar esta publicación?
+            </p>
+            {publicacion && (
+              <p className="text-gray-500 text-center text-sm mt-2">
+                "{publicacion.title}"
               </p>
-              <p className="text-sm text-gray-500 mt-2">
-                Esta acción no se puede deshacer.
-              </p>
-            </div>
+            )}
           </div>
         </div>
 
         {/* Botones */}
-        <div className="px-6 py-4 border-t border-gray-200 flex gap-3 justify-end">
+        <div className="px-6 py-4 flex gap-3 justify-end">
           <Button 
             type="button" 
             variant="outline" 
@@ -51,7 +41,7 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacionT
           </Button>
           <Button 
             type="button"
-            onClick={onConfirm}
+            onClick={() => onConfirm(publicacion)}
             className="bg-red-600 hover:bg-red-700 text-white"
           >
             Eliminar
