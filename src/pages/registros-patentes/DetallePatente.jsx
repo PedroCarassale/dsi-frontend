@@ -8,18 +8,23 @@ import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 import ModalPatenteForm from "./ModalPatenteForm";
 
 function DetallePatente({ patente, onBack, onUpdateSelected }) {
-  if (!patente) return null;
-
   const dispatch = useDispatch();
   const patentes = useSelector(getPatentes);
 
   // Estados para los modales
-  const [modalEliminar, setModalEliminar] = useState({ isOpen: false, patente: null });
-  const [modalForm, setModalForm] = useState({ isOpen: false, patente: null, isEditing: false });
+  const [modalEliminar, setModalEliminar] = useState({
+    isOpen: false,
+    patente: null,
+  });
+  const [modalForm, setModalForm] = useState({
+    isOpen: false,
+    patente: null,
+    isEditing: false,
+  });
 
   // Actualizar la patente seleccionada cuando cambie en Redux
   useEffect(() => {
-    const updatedPatente = patentes.find(p => p.id === patente.id);
+    const updatedPatente = patentes.find((p) => p.id === patente.id);
     if (updatedPatente && onUpdateSelected) {
       onUpdateSelected(updatedPatente);
     }
@@ -38,6 +43,8 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
     onBack();
   };
 
+  if (!patente) return null;
+
   return (
     <div className="max-w-5xl mx-auto">
       {/* Header con botón volver */}
@@ -55,13 +62,15 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
       <div className="flex items-center justify-between mb-10">
         <div>
           <p className="text-lg text-gray-500 mb-3">Patente</p>
-          <h1 className="text-4xl font-bold text-gray-900 leading-tight">{patente.title}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 leading-tight">
+            {patente.title}
+          </h1>
         </div>
-        
+
         {/* Botones de acción en el header */}
         <div className="flex items-center gap-3">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="default"
             onClick={handleEdit}
             className="flex items-center px-6 py-3 text-base"
@@ -69,8 +78,8 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
             <Edit className="h-5 w-5 mr-2" />
             Editar
           </Button>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="default"
             onClick={handleDelete}
             className="flex items-center text-red-600 border-red-300 hover:bg-red-50 px-4 py-3"
@@ -83,11 +92,16 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
       {/* Sección Descripción */}
       <div className="bg-white rounded-lg border border-gray-200 mb-8">
         <div className="p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Descripción</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+            Descripción
+          </h2>
           <p className="text-gray-700 leading-relaxed text-lg">
-            Sistema innovador que utiliza inteligencia artificial para el diagnóstico automatizado de enfermedades mediante el análisis de imágenes 
-            médicas. El sistema incorpora algoritmos de aprendizaje profundo que permiten identificar patrones complejos en radiografías, 
-            tomografías y resonancias magnéticas con alta precisión.
+            Sistema innovador que utiliza inteligencia artificial para el
+            diagnóstico automatizado de enfermedades mediante el análisis de
+            imágenes médicas. El sistema incorpora algoritmos de aprendizaje
+            profundo que permiten identificar patrones complejos en
+            radiografías, tomografías y resonancias magnéticas con alta
+            precisión.
           </p>
         </div>
       </div>
@@ -99,19 +113,25 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
             <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
               <div className="w-4 h-4 bg-blue-600 rounded"></div>
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900">Información de la Patente</h2>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Información de la Patente
+            </h2>
           </div>
         </div>
-        
+
         <div className="p-8">
           <div className="space-y-6">
             <div className="flex justify-between py-4 border-b border-gray-100">
               <span className="text-gray-500 text-lg">Código</span>
-              <span className="text-gray-900 font-medium text-lg">{patente.code}</span>
+              <span className="text-gray-900 font-medium text-lg">
+                {patente.code}
+              </span>
             </div>
             <div className="flex justify-between py-4">
               <span className="text-gray-500 text-lg">Organismo</span>
-              <span className="text-gray-900 font-medium text-lg">{patente.type}</span>
+              <span className="text-gray-900 font-medium text-lg">
+                {patente.organization}
+              </span>
             </div>
           </div>
         </div>
@@ -128,7 +148,9 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
       {/* Modal de formulario de edición */}
       <ModalPatenteForm
         isOpen={modalForm.isOpen}
-        onClose={() => setModalForm({ isOpen: false, patente: null, isEditing: false })}
+        onClose={() =>
+          setModalForm({ isOpen: false, patente: null, isEditing: false })
+        }
         patente={modalForm.patente}
         isEditing={modalForm.isEditing}
       />

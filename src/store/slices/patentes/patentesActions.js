@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getRequest,
   postRequest,
-  putRequest,
+  patchRequest,
   deleteRequest,
 } from "../../../services/api";
 
@@ -41,7 +41,7 @@ const updatePatente = createAsyncThunk(
   "patentes/updatePatente",
   async ({ id, ...patenteData }, { rejectWithValue }) => {
     try {
-      const response = await putRequest(`/patents/${id}`, patenteData);
+      const response = await patchRequest(`/patents/${id}`, patenteData);
       return response.data;
     } catch (error) {
       return rejectWithValue(

@@ -6,6 +6,7 @@ const login = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await postRequest("/auth/login", credentials);
+      localStorage.setItem("token", response.data.access_token);
       return response.data;
     } catch (error) {
       return rejectWithValue(

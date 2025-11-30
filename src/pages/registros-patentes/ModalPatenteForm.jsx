@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createPatente,
   updatePatente,
+  getPatentes,
 } from "../../store/slices/patentes/patentesActions";
 import { getPatentesLoading } from "../../store/slices/patentes/petentesSelector";
 
@@ -17,7 +18,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
     title: patente?.title || "",
     code: patente?.code || "",
     description: patente?.description || "",
-    type: patente?.type || "",
+    organization: patente?.organization || "",
     year: patente?.year || new Date().getFullYear(),
   });
 
@@ -28,7 +29,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
         title: patente.title || "",
         code: patente.code || "",
         description: patente.description || "",
-        type: patente.type || "",
+        organization: patente.organization || "",
         year: patente.year || new Date().getFullYear(),
       });
     } else {
@@ -36,7 +37,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
         title: "",
         code: "",
         description: "",
-        type: "",
+        organization: "",
         year: new Date().getFullYear(),
       });
     }
@@ -47,13 +48,21 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isEditing && patente) {
-      await dispatch(updatePatente({ id: patente.id, ...formData }));
-    } else {
-      await dispatch(createPatente(formData));
-    }
+    try {
+      if (isEditing && patente) {
+        await dispatch(updatePatente({ id: patente.id, ...formData })).unwrap();
+      } else {
+        await dispatch(createPatente(formData)).unwrap();
+      }
 
-    onClose();
+      // Recargar las patentes después de crear o actualizar
+      await dispatch(getPatentes());
+
+      onClose();
+    } catch (error) {
+      console.error("Error al guardar la patente:", error);
+      // Aquí podrías mostrar un mensaje de error al usuario
+    }
   };
 
   const handleInputChange = (field, value) => {
@@ -155,8 +164,10 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
                 Organismo Competente <span className="text-red-500">*</span>
               </label>
               <select
-                value={formData.type}
-                onChange={(e) => handleInputChange("type", e.target.value)}
+                value={formData.organization}
+                onChange={(e) =>
+                  handleInputChange("organization", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >

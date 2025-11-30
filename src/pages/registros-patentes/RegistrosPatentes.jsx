@@ -248,14 +248,14 @@ function RegistrosPatentes() {
                   <div className="flex items-center gap-6 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4 text-gray-400" />
-                      <span>{patente.date}</span>
+                      <span>{patente.year}</span>
                     </div>
                   </div>
 
                   {/* Badge del tipo */}
                   <div className="mt-3">
                     <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-                      {patente.type}
+                      {patente.organization}
                     </span>
                   </div>
                 </div>
