@@ -1,74 +1,73 @@
+import axios from "axios";
 import { store } from "../store/store";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+// Configurar URL base de la API
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-const getAuthToken = () => {
-  const state = store.getState();
-  return state.auth?.token || null;
-};
-
-const getAuthHeaders = (customHeaders = {}) => {
-  const token = getAuthToken();
-  const headers = {
+// Crear instancia de axios
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
     "Content-Type": "application/json",
-    ...customHeaders,
-  };
+  },
+});
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
+// Interceptor para agregar el token a cada request
+apiClient.interceptors.request.use(
+  (config) => {
+    const state = store.getState();
+    const token = state.auth?.token;
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  return headers;
-};
-
-const handleResponse = async (response) => {
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw {
+// Interceptor para manejar respuestas y errores
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Formatear el error para que sea consistente
+    const formattedError = {
       response: {
-        data: error,
-        status: response.status,
+        data: error.response?.data || {},
+        status: error.response?.status,
       },
     };
+    return Promise.reject(formattedError);
   }
-  return response.json();
-};
+);
 
 // GET request
 export const getRequest = async (endpoint, options = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method: "GET",
-    headers: getAuthHeaders(options.headers),
-    ...options,
-  });
-  return { data: await handleResponse(response) };
+  const response = await apiClient.get(endpoint, options);
+  return { data: response.data };
 };
 
+// POST request
 export const postRequest = async (endpoint, body, options = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method: "POST",
-    headers: getAuthHeaders(options.headers),
-    body: JSON.stringify(body),
-    ...options,
-  });
-  return { data: await handleResponse(response) };
+  const response = await apiClient.post(endpoint, body, options);
+  return { data: response.data };
 };
 
+// PUT request
 export const putRequest = async (endpoint, body, options = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method: "PUT",
-    headers: getAuthHeaders(options.headers),
-    body: JSON.stringify(body),
-    ...options,
-  });
-  return { data: await handleResponse(response) };
+  const response = await apiClient.put(endpoint, body, options);
+  return { data: response.data };
 };
 
+// DELETE request
 export const deleteRequest = async (endpoint, options = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(options.headers),
-    ...options,
-  });
-  return { data: await handleResponse(response) };
+  const response = await apiClient.delete(endpoint, options);
+  return { data: response.data };
 };
+
+export default apiClient;

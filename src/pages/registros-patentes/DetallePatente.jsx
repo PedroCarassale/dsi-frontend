@@ -1,15 +1,29 @@
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePatente } from "../../store/slices/patentes/patentesActions";
+import { getPatentes } from "../../store/slices/patentes/petentesSelector";
 import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 import ModalPatenteForm from "./ModalPatenteForm";
 
-function DetallePatente({ patente, onBack, onDelete, onUpdate }) {
+function DetallePatente({ patente, onBack, onUpdateSelected }) {
   if (!patente) return null;
+
+  const dispatch = useDispatch();
+  const patentes = useSelector(getPatentes);
 
   // Estados para los modales
   const [modalEliminar, setModalEliminar] = useState({ isOpen: false, patente: null });
   const [modalForm, setModalForm] = useState({ isOpen: false, patente: null, isEditing: false });
+
+  // Actualizar la patente seleccionada cuando cambie en Redux
+  useEffect(() => {
+    const updatedPatente = patentes.find(p => p.id === patente.id);
+    if (updatedPatente && onUpdateSelected) {
+      onUpdateSelected(updatedPatente);
+    }
+  }, [patentes, patente.id, onUpdateSelected]);
 
   const handleEdit = () => {
     setModalForm({ isOpen: true, patente, isEditing: true });
@@ -20,14 +34,8 @@ function DetallePatente({ patente, onBack, onDelete, onUpdate }) {
   };
 
   const confirmEliminar = (patente) => {
-    onDelete && onDelete(patente);
+    dispatch(deletePatente(patente.id));
     onBack();
-  };
-
-  const handleSavePatente = (formData) => {
-    // Actualizar patente existente
-    const updatedPatente = { ...patente, ...formData };
-    onUpdate && onUpdate(updatedPatente);
   };
 
   return (
@@ -121,7 +129,6 @@ function DetallePatente({ patente, onBack, onDelete, onUpdate }) {
       <ModalPatenteForm
         isOpen={modalForm.isOpen}
         onClose={() => setModalForm({ isOpen: false, patente: null, isEditing: false })}
-        onSave={handleSavePatente}
         patente={modalForm.patente}
         isEditing={modalForm.isEditing}
       />

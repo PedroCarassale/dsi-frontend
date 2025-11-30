@@ -1,27 +1,58 @@
 import { X } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createPatente,
+  updatePatente,
+} from "../../store/slices/patentes/patentesActions";
+import { getPatentesLoading } from "../../store/slices/patentes/petentesSelector";
 
-function ModalPatenteForm({
-  isOpen,
-  onClose,
-  onSave,
-  patente,
-  isEditing = false,
-}) {
+function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
+  const dispatch = useDispatch();
+  const loading = useSelector(getPatentesLoading);
+
   const [formData, setFormData] = useState({
     title: patente?.title || "",
     code: patente?.code || "",
     description: patente?.description || "",
     type: patente?.type || "",
+    year: patente?.year || new Date().getFullYear(),
   });
+
+  // Actualizar formData cuando cambie la patente
+  useEffect(() => {
+    if (patente) {
+      setFormData({
+        title: patente.title || "",
+        code: patente.code || "",
+        description: patente.description || "",
+        type: patente.type || "",
+        year: patente.year || new Date().getFullYear(),
+      });
+    } else {
+      setFormData({
+        title: "",
+        code: "",
+        description: "",
+        type: "",
+        year: new Date().getFullYear(),
+      });
+    }
+  }, [patente, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
+
+    if (isEditing && patente) {
+      await dispatch(updatePatente({ id: patente.id, ...formData }));
+    } else {
+      await dispatch(createPatente(formData));
+    }
+
     onClose();
   };
 
@@ -153,8 +184,13 @@ function ModalPatenteForm({
             <Button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+              disabled={loading}
             >
-              {isEditing ? "Actualizar Patente" : "Guardar Patente"}
+              {loading
+                ? "Guardando..."
+                : isEditing
+                ? "Actualizar Patente"
+                : "Guardar Patente"}
             </Button>
           </div>
         </form>

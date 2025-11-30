@@ -1,56 +1,64 @@
-import { Plus, Search, Home, Shield, Calendar, Eye, MoreVertical, Edit, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Home,
+  Shield,
+  Calendar,
+  Eye,
+  MoreVertical,
+  Edit,
+  Trash2,
+} from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getPatentes,
+  deletePatente,
+} from "../../store/slices/patentes/patentesActions";
+import {
+  getPatentes as getPatentesSelector,
+  getPatentesLoading,
+  getPatentesError,
+} from "../../store/slices/patentes/petentesSelector";
 import DetallePatente from "./DetallePatente";
 import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 import ModalPatenteForm from "./ModalPatenteForm";
 
 function RegistrosPatentes() {
   const navigate = useNavigate();
-  
-  // Datos mock según el Figma
-  const [patentes, setPatentes] = useState([
-    {
-      id: 1,
-      title: "Sistema de Diagnóstico Automatizado",
-      code: "ES2024001234",
-      date: "15/10/2025",
-      type: "INTI"
-    },
-    {
-      id: 2,
-      title: "Método de Análisis de Imágenes Médicas",
-      code: "ES2023005478",
-      date: "23/08/2025",
-      type: "INTI"
-    },
-    {
-      id: 3,
-      title: "Algoritmo de Detección Temprana",
-      code: "ES2024002345",
-      date: "10/01/2025",
-      type: "USPTO"
-    },
-    {
-      id: 4,
-      title: "Software de Gestión Hospitalaria",
-      code: "WO2024001122",
-      date: "02/12/2024",
-      type: "USPTO"
-    }
-  ]);
+  const dispatch = useDispatch();
+
+  // Redux state
+  const patentes = useSelector(getPatentesSelector);
+  const loading = useSelector(getPatentesLoading);
+  const error = useSelector(getPatentesError);
+
+  // Cargar patentes al montar el componente
+  useEffect(() => {
+    dispatch(getPatentes());
+  }, [dispatch]);
 
   // Estados para navegación y modales
   const [selectedPatente, setSelectedPatente] = useState(null);
   const [menuAbierto, setMenuAbierto] = useState(null);
-  const [modalEliminar, setModalEliminar] = useState({ isOpen: false, patente: null });
-  const [modalForm, setModalForm] = useState({ isOpen: false, patente: null, isEditing: false });
+  const [modalEliminar, setModalEliminar] = useState({
+    isOpen: false,
+    patente: null,
+  });
+  const [modalForm, setModalForm] = useState({
+    isOpen: false,
+    patente: null,
+    isEditing: false,
+  });
 
   // Calcular estadísticas
   const totalPatentes = patentes.length;
-  const esteAño = patentes.filter(p => p.date.includes('2025')).length;
+  const esteAño = patentes.filter(
+    (p) => p.year === new Date().getFullYear()
+  ).length;
 
   const handleVerDetalle = (patente) => {
     setSelectedPatente(patente);
@@ -72,7 +80,7 @@ function RegistrosPatentes() {
   };
 
   const confirmEliminar = (patente) => {
-    setPatentes(patentes.filter(p => p.id !== patente.id));
+    dispatch(deletePatente(patente.id));
   };
 
   const toggleMenu = (patenteId) => {
@@ -83,55 +91,46 @@ function RegistrosPatentes() {
     setModalForm({ isOpen: true, patente: null, isEditing: false });
   };
 
-  const handleSavePatente = (formData) => {
-    if (modalForm.isEditing) {
-      // Actualizar patente existente
-      setPatentes(patentes.map(p => 
-        p.id === modalForm.patente.id 
-          ? { ...p, ...formData }
-          : p
-      ));
-    } else {
-      // Crear nueva patente
-      const newPatente = {
-        id: Math.max(...patentes.map(p => p.id)) + 1,
-        ...formData,
-        date: new Date().toLocaleDateString('es-ES')
-      };
-      setPatentes([...patentes, newPatente]);
-    }
-  };
-
   // Cerrar menú al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuAbierto && !event.target.closest('.relative')) {
+      if (menuAbierto && !event.target.closest(".relative")) {
         setMenuAbierto(null);
       }
     };
 
     if (menuAbierto) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
     }
   }, [menuAbierto]);
 
   // Si hay una patente seleccionada, mostrar el detalle
   if (selectedPatente) {
     return (
-      <DetallePatente 
-        patente={selectedPatente} 
+      <DetallePatente
+        patente={selectedPatente}
         onBack={handleVolver}
-        onDelete={(patente) => {
-          setPatentes(patentes.filter(p => p.id !== patente.id));
-        }}
-        onUpdate={(updatedPatente) => {
-          setPatentes(patentes.map(p => 
-            p.id === updatedPatente.id ? updatedPatente : p
-          ));
-          setSelectedPatente(updatedPatente); // Actualizar también la patente seleccionada
-        }}
+        onUpdateSelected={setSelectedPatente}
       />
+    );
+  }
+
+  // Mostrar loading
+  if (loading && patentes.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500">Cargando patentes...</div>
+      </div>
+    );
+  }
+
+  // Mostrar error
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-500">Error: {error}</div>
+      </div>
     );
   }
 
@@ -140,8 +139,8 @@ function RegistrosPatentes() {
       {/* Sección de título con breadcrumb */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
-          <button 
-            onClick={() => navigate('/')}
+          <button
+            onClick={() => navigate("/")}
             className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
           >
             <Home className="h-5 w-5 text-gray-600" />
@@ -149,11 +148,15 @@ function RegistrosPatentes() {
           <div className="bg-green-100 p-2.5 rounded-lg border border-green-200">
             <Shield className="h-5 w-5 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Registros y Patentes</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Registros y Patentes
+          </h1>
         </div>
-        
-        <p className="text-gray-600 text-sm ml-20">Gestión de propiedad intelectual del grupo</p>
-        
+
+        <p className="text-gray-600 text-sm ml-20">
+          Gestión de propiedad intelectual del grupo
+        </p>
+
         {/* Buscador y botón */}
         <div className="flex items-center gap-4 mt-6">
           <div className="relative flex-1 max-w-md">
@@ -163,8 +166,11 @@ function RegistrosPatentes() {
               className="pl-10 bg-white border-gray-200"
             />
           </div>
-          
-          <Button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700" onClick={handleNuevaPatente}>
+
+          <Button
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+            onClick={handleNuevaPatente}
+          >
             <Plus className="h-4 w-4" />
             Nueva Patente
           </Button>
@@ -180,8 +186,12 @@ function RegistrosPatentes() {
               <Shield className="h-8 w-8 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Patentes</p>
-              <p className="text-2xl font-semibold text-gray-900">{totalPatentes}</p>
+              <p className="text-sm font-medium text-gray-500">
+                Total Patentes
+              </p>
+              <p className="text-2xl font-semibold text-gray-900">
+                {totalPatentes}
+              </p>
               <p className="text-sm text-gray-500 mt-1">Registradas</p>
             </div>
           </div>
@@ -204,14 +214,21 @@ function RegistrosPatentes() {
 
       {/* Título de sección */}
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Lista de Patentes y Registros</h3>
-        <span className="text-sm text-gray-500">{patentes.length} registros</span>
+        <h3 className="text-lg font-semibold text-gray-900">
+          Lista de Patentes y Registros
+        </h3>
+        <span className="text-sm text-gray-500">
+          {patentes.length} registros
+        </span>
       </div>
 
       {/* Lista de Patentes - Cards individuales */}
       <div className="space-y-4">
         {patentes.map((patente) => (
-          <div key={patente.id} className="bg-white rounded-lg border border-gray-200 p-6">
+          <div
+            key={patente.id}
+            className="bg-white rounded-lg border border-gray-200 p-6"
+          >
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-4 flex-1">
                 <div className="flex-shrink-0">
@@ -220,9 +237,13 @@ function RegistrosPatentes() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-1">{patente.title}</h4>
-                  <p className="text-sm text-gray-600 mb-2">Código: {patente.code}</p>
-                  
+                  <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                    {patente.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Código: {patente.code}
+                  </p>
+
                   {/* Información adicional con iconos */}
                   <div className="flex items-center gap-6 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
@@ -239,22 +260,22 @@ function RegistrosPatentes() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 {/* Botón Ver Detalles */}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
                   onClick={() => handleVerDetalle(patente)}
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   Ver Detalles
                 </Button>
-                
+
                 {/* Botón de más opciones con menú */}
                 <div className="relative">
-                  <button 
+                  <button
                     className="text-gray-400 hover:text-gray-600 p-1 rounded"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -263,7 +284,7 @@ function RegistrosPatentes() {
                   >
                     <MoreVertical className="h-5 w-5" />
                   </button>
-                  
+
                   {/* Menú desplegable */}
                   {menuAbierto === patente.id && (
                     <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
@@ -309,8 +330,9 @@ function RegistrosPatentes() {
       {/* Modal de formulario (nuevo/editar) */}
       <ModalPatenteForm
         isOpen={modalForm.isOpen}
-        onClose={() => setModalForm({ isOpen: false, patente: null, isEditing: false })}
-        onSave={handleSavePatente}
+        onClose={() =>
+          setModalForm({ isOpen: false, patente: null, isEditing: false })
+        }
         patente={modalForm.patente}
         isEditing={modalForm.isEditing}
       />
