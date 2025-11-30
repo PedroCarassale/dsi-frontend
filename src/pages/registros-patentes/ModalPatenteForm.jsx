@@ -3,12 +3,18 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState } from "react";
 
-function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false }) {
+function ModalPatenteForm({
+  isOpen,
+  onClose,
+  onSave,
+  patente,
+  isEditing = false,
+}) {
   const [formData, setFormData] = useState({
-    title: patente?.title || '',
-    code: patente?.code || '',
-    description: patente?.description || '',
-    type: patente?.type || ''
+    title: patente?.title || "",
+    code: patente?.code || "",
+    description: patente?.description || "",
+    type: patente?.type || "",
   });
 
   if (!isOpen) return null;
@@ -20,9 +26,9 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -33,7 +39,7 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">
-              {isEditing ? 'Editar Registro/Patente' : 'Nuevo Registro/Patente'}
+              {isEditing ? "Editar Registro/Patente" : "Nuevo Registro/Patente"}
             </h3>
             <button
               onClick={onClose}
@@ -47,6 +53,25 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
         {/* Formulario */}
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-6">
+            {/* Año */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Año <span className="text-red-500">*</span>
+              </label>
+              <Input
+                type="number"
+                value={formData.year}
+                onChange={(e) =>
+                  handleInputChange("year", parseInt(e.target.value))
+                }
+                min="1900"
+                max="2100"
+                placeholder="Año de la patente o registro"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
             {/* Título */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -54,7 +79,7 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
               </label>
               <textarea
                 value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
+                onChange={(e) => handleInputChange("title", e.target.value)}
                 placeholder="Título de la patente o registro"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y"
@@ -70,7 +95,7 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
               <Input
                 type="text"
                 value={formData.code}
-                onChange={(e) => handleInputChange('code', e.target.value)}
+                onChange={(e) => handleInputChange("code", e.target.value)}
                 placeholder="Código de la patente o registro"
                 className="w-full"
                 required
@@ -84,7 +109,9 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
               </label>
               <textarea
                 value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
                 placeholder="Descripción sobre la patente"
                 className="w-full min-h-32 px-3 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 required
@@ -98,11 +125,13 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
               </label>
               <select
                 value={formData.type}
-                onChange={(e) => handleInputChange('type', e.target.value)}
+                onChange={(e) => handleInputChange("type", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
-                <option value="">Sobre que organismo se tramito la patente</option>
+                <option value="">
+                  Sobre que organismo se tramito la patente
+                </option>
                 <option value="INTI">INTI</option>
                 <option value="USPTO">USPTO</option>
                 <option value="EPO">EPO</option>
@@ -113,19 +142,19 @@ function ModalPatenteForm({ isOpen, onClose, onSave, patente, isEditing = false 
 
           {/* Botones */}
           <div className="mt-8 flex gap-3 justify-end">
-            <Button 
+            <Button
               type="button"
-              variant="outline" 
+              variant="outline"
               onClick={onClose}
               className="px-6"
             >
               Cancelar
             </Button>
-            <Button 
+            <Button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6"
             >
-              {isEditing ? 'Actualizar Patente' : 'Guardar Patente'}
+              {isEditing ? "Actualizar Patente" : "Guardar Patente"}
             </Button>
           </div>
         </form>
