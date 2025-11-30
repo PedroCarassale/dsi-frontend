@@ -1,8 +1,26 @@
-// Configuración base de la API
-// En desarrollo, Vite proxy redirige las peticiones automáticamente
+import { store } from "../store/store";
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
-// Función auxiliar para manejar respuestas
+const getAuthToken = () => {
+  const state = store.getState();
+  return state.auth?.token || null;
+};
+
+const getAuthHeaders = (customHeaders = {}) => {
+  const token = getAuthToken();
+  const headers = {
+    "Content-Type": "application/json",
+    ...customHeaders,
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  return headers;
+};
+
 const handleResponse = async (response) => {
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
@@ -20,51 +38,36 @@ const handleResponse = async (response) => {
 export const getRequest = async (endpoint, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers: getAuthHeaders(options.headers),
     ...options,
   });
   return { data: await handleResponse(response) };
 };
 
-// POST request
 export const postRequest = async (endpoint, body, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers: getAuthHeaders(options.headers),
     body: JSON.stringify(body),
     ...options,
   });
   return { data: await handleResponse(response) };
 };
 
-// PUT request
 export const putRequest = async (endpoint, body, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers: getAuthHeaders(options.headers),
     body: JSON.stringify(body),
     ...options,
   });
   return { data: await handleResponse(response) };
 };
 
-// DELETE request
 export const deleteRequest = async (endpoint, options = {}) => {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    headers: getAuthHeaders(options.headers),
     ...options,
   });
   return { data: await handleResponse(response) };
