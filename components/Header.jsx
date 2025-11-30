@@ -37,10 +37,12 @@ function Header() {
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center">
                 <Home className="h-6 w-6 text-blue-600" />
-                <span className="ml-3 text-lg font-semibold text-gray-900">Interfaz de usuario DSI</span>
+                <span className="ml-3 text-lg font-semibold text-gray-900">
+                  Interfaz de usuario DSI
+                </span>
               </Link>
             </div>
-            
+
             {/* Navegación */}
             <nav className="ml-10 flex items-baseline space-x-8">
               <Link
@@ -139,11 +141,14 @@ function Header() {
                 </div>
               )}
             </div>
-
             {/* Dropdown Grupo */}
             <div className="flex items-center text-sm">
               <span className="text-gray-600 mr-1">Grupo:</span>
-              <Button variant="ghost" size="sm" className="text-gray-900 hover:text-gray-700">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-900 hover:text-gray-700"
+              >
                 Grupo 11
                 <ChevronDown className="h-4 w-4 ml-1" />
               </Button>

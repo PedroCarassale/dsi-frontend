@@ -22,7 +22,13 @@ const ForgotPasswordContainer = styled.div`
   gap: 10px;
   cursor: pointer;
 `;
-const TextAndInput = ({ text, input, ...props }) => {
+const TextAndInput = ({
+  text,
+  input,
+  value = "",
+  onChange = () => {},
+  ...props
+}) => {
   return (
     <TextAndInputContainer>
       <TextContainer>
@@ -37,7 +43,13 @@ const TextAndInput = ({ text, input, ...props }) => {
           </ForgotPasswordContainer>
         )}
       </TextContainer>
-      <Input type="text" placeholder={input} {...props} />
+      <Input
+        type="text"
+        placeholder={input}
+        value={value}
+        onChange={onChange}
+        {...props}
+      />
     </TextAndInputContainer>
   );
 };
