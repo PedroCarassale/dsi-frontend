@@ -27,6 +27,7 @@ const TextAndInput = ({
   input,
   value = "",
   onChange = () => {},
+  type = "text",
   ...props
 }) => {
   return (
@@ -44,7 +45,7 @@ const TextAndInput = ({
         )}
       </TextContainer>
       <Input
-        type="text"
+        type={type}
         placeholder={input}
         value={value}
         onChange={onChange}

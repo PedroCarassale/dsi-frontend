@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { login } from "./authActions";
 
 const initialState = {
-  loading: true,
+  loading: false,
   error: null,
   token: null,
   user: null,
@@ -12,7 +12,19 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: () => initialState,
+    initializeAuth: (state) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        state.token = token;
+      }
+    },
+    logout: (state) => {
+      localStorage.removeItem("token");
+      state.token = null;
+      state.user = null;
+      state.error = null;
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -33,6 +45,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, initializeAuth } = authSlice.actions;
 
 export default authSlice.reducer;

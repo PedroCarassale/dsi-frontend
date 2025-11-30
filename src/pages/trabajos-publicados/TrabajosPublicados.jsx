@@ -1,4 +1,4 @@
-import { Plus, Search, Home, BookOpen, Users, Calendar, Eye, MoreVertical } from "lucide-react";
+import { Plus, Search, Home, BookOpen, Users, Calendar, Eye, MoreVertical, Edit, Trash2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
@@ -12,6 +12,7 @@ import {
 } from "../../store/slices/trabajos/trabajosSelector";
 import DetallePublicacion from "./DetallePublicacion";
 import ModalPublicacionForm from "./ModalPublicacionForm";
+import ModalConfirmacionEliminacion from "../registros-patentes/ModalConfirmacionEliminacion";
 
 function TrabajosPublicados() {
   const navigate = useNavigate();
@@ -29,7 +30,16 @@ function TrabajosPublicados() {
   
   // Estados
   const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
-  const [showNewModal, setShowNewModal] = useState(false);
+  const [menuAbierto, setMenuAbierto] = useState(null);
+  const [modalEliminar, setModalEliminar] = useState({
+    isOpen: false,
+    publicacion: null,
+  });
+  const [modalForm, setModalForm] = useState({
+    isOpen: false,
+    publicacion: null,
+    isEditing: false,
+  });
 
   const handleVerDetalle = (publicacion) => {
     setPublicacionSeleccionada(publicacion);
@@ -39,14 +49,42 @@ function TrabajosPublicados() {
     setPublicacionSeleccionada(null);
   };
 
-  const handleNuevaPublicacion = () => {
-    setShowNewModal(true);
+  const handleEditar = (publicacion) => {
+    setModalForm({ isOpen: true, publicacion, isEditing: true });
+    setMenuAbierto(null);
   };
 
-  const handleSaveNewPublicacion = (formData) => {
-    // El manejo de crear/actualizar ahora se hace en el modal
-    // que hace el dispatch directamente
+  const handleEliminar = (publicacion) => {
+    setModalEliminar({ isOpen: true, publicacion });
+    setMenuAbierto(null);
   };
+
+  const confirmEliminar = (publicacion) => {
+    dispatch(deleteTrabajo(publicacion.id));
+    setModalEliminar({ isOpen: false, publicacion: null });
+  };
+
+  const toggleMenu = (publicacionId) => {
+    setMenuAbierto(menuAbierto === publicacionId ? null : publicacionId);
+  };
+
+  const handleNuevaPublicacion = () => {
+    setModalForm({ isOpen: true, publicacion: null, isEditing: false });
+  };
+
+  // Cerrar menú al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuAbierto && !event.target.closest(".relative")) {
+        setMenuAbierto(null);
+      }
+    };
+
+    if (menuAbierto) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [menuAbierto]);
 
   // Mostrar loading
   if (loading && publicaciones.length === 0) {
@@ -199,23 +237,68 @@ function TrabajosPublicados() {
                   Ver Detalles
                 </Button>
                 
-                {/* Botón de más opciones */}
-                <button className="text-gray-400 hover:text-gray-600 p-1 rounded">
-                  <MoreVertical className="h-5 w-5" />
-                </button>
+                {/* Botón de más opciones con menú */}
+                <div className="relative">
+                  <button
+                    className="text-gray-400 hover:text-gray-600 p-1 rounded"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleMenu(pub.id);
+                    }}
+                  >
+                    <MoreVertical className="h-5 w-5" />
+                  </button>
+
+                  {/* Menú desplegable */}
+                  {menuAbierto === pub.id && (
+                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                      <div className="py-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditar(pub);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Editar
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEliminar(pub);
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal para nueva publicación */}
+      {/* Modal de confirmación de eliminación */}
+      <ModalConfirmacionEliminacion
+        isOpen={modalEliminar.isOpen}
+        onClose={() => setModalEliminar({ isOpen: false, publicacion: null })}
+        onConfirm={confirmEliminar}
+        patente={modalEliminar.publicacion}
+      />
+
+      {/* Modal para nueva/editar publicación */}
       <ModalPublicacionForm
-        isOpen={showNewModal}
-        onClose={() => setShowNewModal(false)}
-        onSave={handleSaveNewPublicacion}
-        publicacion={null}
-        isEditing={false}
+        isOpen={modalForm.isOpen}
+        onClose={() =>
+          setModalForm({ isOpen: false, publicacion: null, isEditing: false })
+        }
+        publicacion={modalForm.publicacion}
+        isEditing={modalForm.isEditing}
       />
     </>
   );

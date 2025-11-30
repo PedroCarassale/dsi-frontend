@@ -7,8 +7,18 @@ import TrabajosPublicados from "./pages/trabajos-publicados/TrabajosPublicados";
 import AppLayout from "../components/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
 import Login from "./pages/login/Login";
+import ProtectedRoute from "../components/ProtectedRoute";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { initializeAuth } from "./store/slices/auth/authSlice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializeAuth());
+  }, [dispatch]);
+
   return (
     <div className="app">
       <NotificationProvider>
@@ -16,9 +26,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/memorias-anuales" element={<MemoriasAnuales />} />
-            <Route path="/registros-patentes" element={<RegistrosPatentes />} />
-            <Route path="/trabajos-publicados" element={<TrabajosPublicados />} />
+            <Route path="/memorias-anuales" element={<ProtectedRoute><MemoriasAnuales /></ProtectedRoute>} />
+            <Route path="/registros-patentes" element={<ProtectedRoute><RegistrosPatentes /></ProtectedRoute>} />
+            <Route path="/trabajos-publicados" element={<ProtectedRoute><TrabajosPublicados /></ProtectedRoute>} />
           </Routes>
         </AppLayout>
       </NotificationProvider>
