@@ -72,6 +72,13 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
     }));
   };
 
+  const handleNumberInput = (field, value) => {
+    // Solo permitir números
+    if (value === "" || /^\d+$/.test(value)) {
+      handleInputChange(field, value === "" ? "" : parseInt(value));
+    }
+  };
+
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
@@ -135,10 +142,15 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
               <Input
                 type="text"
                 value={formData.code}
-                onChange={(e) => handleInputChange("code", e.target.value)}
+                onChange={(e) => handleNumberInput("code", e.target.value)}
                 placeholder="Código de la patente o registro"
                 className="w-full"
                 required
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
             </div>
 

@@ -94,6 +94,13 @@ function ModalPublicacionForm({
     }));
   };
 
+  const handleNumberInput = (field, value) => {
+    // Solo permitir números
+    if (value === "" || /^\d+$/.test(value)) {
+      handleInputChange(field, value === "" ? "" : parseInt(value));
+    }
+  };
+
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
@@ -170,7 +177,7 @@ function ModalPublicacionForm({
                   value={formData.issn}
                   onChange={(e) => handleInputChange("issn", e.target.value)}
                   type="number"
-                  placeholder="1234-5678"
+                  placeholder="12345678"
                   required
                 />
               </div>
@@ -194,13 +201,23 @@ function ModalPublicacionForm({
                 Año <span className="text-red-500">*</span>
               </label>
               <Input
-                type="number"
+                type="text"
                 value={formData.year}
-                onChange={(e) =>
-                  handleInputChange("year", parseInt(e.target.value))
-                }
-                min="1900"
-                max="2100"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "" || /^\d+$/.test(value)) {
+                    const numValue = value === "" ? new Date().getFullYear() : parseInt(value);
+                    if (numValue >= 1900 && numValue <= 2100) {
+                      handleInputChange("year", numValue);
+                    }
+                  }
+                }}
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
+                placeholder="2024"
                 required
               />
             </div>
