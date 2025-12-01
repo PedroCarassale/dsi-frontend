@@ -9,7 +9,7 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, patente }) {
       <div className="bg-white rounded-lg max-w-md mx-4 w-full shadow-2xl border border-gray-200">
         {/* Header del modal */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Delete Patente</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Eliminar Patente</h3>
         </div>
 
         {/* Contenido del modal */}
@@ -22,6 +22,11 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, patente }) {
             <p className="text-gray-700 text-center text-lg">
               ¿Seguro desea eliminar esta patente?
             </p>
+            {patente && (
+              <p className="text-gray-500 text-center text-sm mt-2">
+                "{patente.title}"
+              </p>
+            )}
           </div>
         </div>
 

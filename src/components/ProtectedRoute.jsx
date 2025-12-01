@@ -1,11 +1,12 @@
+import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getToken } from "../store/slices/auth/authSelector";
-import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
   const token = useSelector(getToken);
 
-  if (!token) {
+  // Si no hay token en Redux ni en localStorage, redirigir a login
+  if (!token && !localStorage.getItem("token")) {
     return <Navigate to="/login" replace />;
   }
 
@@ -13,3 +14,4 @@ function ProtectedRoute({ children }) {
 }
 
 export default ProtectedRoute;
+

@@ -7,10 +7,7 @@ import TrabajosPublicados from "./pages/trabajos-publicados/TrabajosPublicados";
 import AppLayout from "../components/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
 import Login from "./pages/login/Login";
-import ProtectedRoute from "../components/ProtectedRoute";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { initializeAuth } from "./store/slices/auth/authSlice";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,11 +21,47 @@ function App() {
       <NotificationProvider>
         <AppLayout>
           <Routes>
-            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/memorias-anuales" element={<ProtectedRoute><MemoriasAnuales /></ProtectedRoute>} />
-            <Route path="/registros-patentes" element={<ProtectedRoute><RegistrosPatentes /></ProtectedRoute>} />
-            <Route path="/trabajos-publicados" element={<ProtectedRoute><TrabajosPublicados /></ProtectedRoute>} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/memorias-anuales"
+              element={
+                <ProtectedRoute>
+                  <MemoriasAnuales />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/registros-patentes"
+              element={
+                <ProtectedRoute>
+                  <RegistrosPatentes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trabajos-publicados"
+              element={
+                <ProtectedRoute>
+                  <TrabajosPublicados />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </AppLayout>
       </NotificationProvider>

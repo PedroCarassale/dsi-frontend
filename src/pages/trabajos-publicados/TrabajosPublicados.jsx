@@ -12,7 +12,7 @@ import {
 } from "../../store/slices/trabajos/trabajosSelector";
 import DetallePublicacion from "./DetallePublicacion";
 import ModalPublicacionForm from "./ModalPublicacionForm";
-import ModalConfirmacionEliminacion from "../registros-patentes/ModalConfirmacionEliminacion";
+import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 
 function TrabajosPublicados() {
   const navigate = useNavigate();
@@ -27,8 +27,9 @@ function TrabajosPublicados() {
   useEffect(() => {
     dispatch(getTrabajos());
   }, [dispatch]);
-  
-  // Estados
+
+
+  // Estados para navegación y modales
   const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
   const [menuAbierto, setMenuAbierto] = useState(null);
   const [modalEliminar, setModalEliminar] = useState({
@@ -43,6 +44,7 @@ function TrabajosPublicados() {
 
   const handleVerDetalle = (publicacion) => {
     setPublicacionSeleccionada(publicacion);
+    setMenuAbierto(null);
   };
 
   const handleVolver = () => {
@@ -61,7 +63,6 @@ function TrabajosPublicados() {
 
   const confirmEliminar = (publicacion) => {
     dispatch(deleteTrabajo(publicacion.id));
-    setModalEliminar({ isOpen: false, publicacion: null });
   };
 
   const toggleMenu = (publicacionId) => {
@@ -72,7 +73,12 @@ function TrabajosPublicados() {
     setModalForm({ isOpen: true, publicacion: null, isEditing: false });
   };
 
-  // Cerrar menú al hacer click fuera
+  const handleEliminar = (publicacion) => {
+    setModalEliminar({ isOpen: true, publicacion });
+    setMenuAbierto(null);
+  };
+
+    // Cerrar menú al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuAbierto && !event.target.closest(".relative")) {
@@ -80,12 +86,10 @@ function TrabajosPublicados() {
       }
     };
 
-    if (menuAbierto) {
-      document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuAbierto]);
-
+  
   // Mostrar loading
   if (loading && publicaciones.length === 0) {
     return (
@@ -288,15 +292,16 @@ function TrabajosPublicados() {
         isOpen={modalEliminar.isOpen}
         onClose={() => setModalEliminar({ isOpen: false, publicacion: null })}
         onConfirm={confirmEliminar}
-        patente={modalEliminar.publicacion}
+        publicacion={modalEliminar.publicacion}
       />
 
-      {/* Modal para nueva/editar publicación */}
+      {/* Modal de formulario (nuevo/editar) */}
       <ModalPublicacionForm
         isOpen={modalForm.isOpen}
         onClose={() =>
           setModalForm({ isOpen: false, publicacion: null, isEditing: false })
         }
+        onSave={handleSaveNewPublicacion}
         publicacion={modalForm.publicacion}
         isEditing={modalForm.isEditing}
       />
