@@ -96,12 +96,7 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
             Descripción
           </h2>
           <p className="text-gray-700 leading-relaxed text-lg">
-            Sistema innovador que utiliza inteligencia artificial para el
-            diagnóstico automatizado de enfermedades mediante el análisis de
-            imágenes médicas. El sistema incorpora algoritmos de aprendizaje
-            profundo que permiten identificar patrones complejos en
-            radiografías, tomografías y resonancias magnéticas con alta
-            precisión.
+            {patente.description}
           </p>
         </div>
       </div>
