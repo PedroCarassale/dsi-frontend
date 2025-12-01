@@ -10,38 +10,43 @@ import {
 } from "../../store/slices/trabajos/trabajosActions";
 import { getTrabajosLoading } from "../../store/slices/trabajos/trabajosSelector";
 
-function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false }) {
+function ModalPublicacionForm({
+  isOpen,
+  onClose,
+  publicacion,
+  isEditing = false,
+}) {
   const dispatch = useDispatch();
   const loading = useSelector(getTrabajosLoading);
 
   const [formData, setFormData] = useState({
-    title: publicacion?.title || '',
-    journal: publicacion?.journal || '',
-    type: publicacion?.type || 'article',
-    issn: publicacion?.issn || '',
+    title: publicacion?.title || "",
+    journal: publicacion?.journal || "",
+    type: publicacion?.type || "article",
+    issn: publicacion?.issn || "",
     year: publicacion?.year || new Date().getFullYear(),
-    autoresList: publicacion?.authors?.join(', ') || ''
+    autoresList: publicacion?.authors?.join(", ") || "",
   });
 
   // Actualizar formData cuando cambie la publicación
   useEffect(() => {
     if (publicacion) {
       setFormData({
-        title: publicacion.title || '',
-        journal: publicacion.journal || '',
-        type: publicacion.type || 'article',
-        issn: publicacion.issn || '',
+        title: publicacion.title || "",
+        journal: publicacion.journal || "",
+        type: publicacion.type || "article",
+        issn: publicacion.issn || "",
         year: publicacion.year || new Date().getFullYear(),
-        autoresList: publicacion.authors?.join(', ') || ''
+        autoresList: publicacion.authors?.join(", ") || "",
       });
     } else {
       setFormData({
-        title: '',
-        journal: '',
-        type: 'article',
-        issn: '',
+        title: "",
+        journal: "",
+        type: "article",
+        issn: "",
         year: new Date().getFullYear(),
-        autoresList: ''
+        autoresList: "",
       });
     }
   }, [publicacion, isOpen]);
@@ -50,7 +55,7 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Procesar los autores y preparar los datos para la API
     const processedData = {
       title: formData.title,
@@ -58,19 +63,24 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
       type: formData.type,
       issn: formData.issn,
       year: formData.year,
-      authors: formData.autoresList.split(',').map(autor => autor.trim()).filter(autor => autor)
+      authors: formData.autoresList
+        .split(",")
+        .map((autor) => autor.trim())
+        .filter((autor) => autor),
     };
 
     try {
       if (isEditing && publicacion) {
-        await dispatch(updateTrabajo({ id: publicacion.id, ...processedData })).unwrap();
+        await dispatch(
+          updateTrabajo({ id: publicacion.id, ...processedData })
+        ).unwrap();
       } else {
         await dispatch(createTrabajo(processedData)).unwrap();
       }
 
       // Recargar los trabajos después de crear o actualizar
       await dispatch(getTrabajos());
-      
+
       onClose();
     } catch (error) {
       console.error("Error al guardar el trabajo:", error);
@@ -78,9 +88,9 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -91,7 +101,7 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">
-              {isEditing ? 'Editar Publicación' : 'Nueva Publicación'}
+              {isEditing ? "Editar Publicación" : "Nueva Publicación"}
             </h3>
             <button
               onClick={onClose}
@@ -112,7 +122,7 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
               </label>
               <textarea
                 value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
+                onChange={(e) => handleInputChange("title", e.target.value)}
                 placeholder="Título de la publicación"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y"
@@ -127,7 +137,9 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
               </label>
               <Input
                 value={formData.autoresList}
-                onChange={(e) => handleInputChange('autoresList', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("autoresList", e.target.value)
+                }
                 placeholder="Ej: García, J., Pérez, M., López, A."
                 required
               />
@@ -141,7 +153,7 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
                 </label>
                 <select
                   value={formData.type}
-                  onChange={(e) => handleInputChange('type', e.target.value)}
+                  onChange={(e) => handleInputChange("type", e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
@@ -152,12 +164,14 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ISSN
+                  ISSN <span className="text-red-500">*</span>
                 </label>
                 <Input
                   value={formData.issn}
-                  onChange={(e) => handleInputChange('issn', e.target.value)}
+                  onChange={(e) => handleInputChange("issn", e.target.value)}
+                  type="number"
                   placeholder="1234-5678"
+                  required
                 />
               </div>
             </div>
@@ -169,7 +183,7 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
               </label>
               <Input
                 value={formData.journal}
-                onChange={(e) => handleInputChange('journal', e.target.value)}
+                onChange={(e) => handleInputChange("journal", e.target.value)}
                 placeholder="Nombre de la revista o conferencia"
               />
             </div>
@@ -182,7 +196,9 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
               <Input
                 type="number"
                 value={formData.year}
-                onChange={(e) => handleInputChange('year', parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleInputChange("year", parseInt(e.target.value))
+                }
                 min="1900"
                 max="2100"
                 required
@@ -192,19 +208,19 @@ function ModalPublicacionForm({ isOpen, onClose, publicacion, isEditing = false 
 
           {/* Botones */}
           <div className="flex gap-3 justify-end pt-6 mt-6 border-t border-gray-200">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onClose}
-            >
+            <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="bg-blue-600 hover:bg-blue-700"
               disabled={loading}
             >
-              {loading ? 'Guardando...' : isEditing ? 'Actualizar Publicación' : 'Guardar Publicación'}
+              {loading
+                ? "Guardando..."
+                : isEditing
+                ? "Actualizar Publicación"
+                : "Guardar Publicación"}
             </Button>
           </div>
         </form>
