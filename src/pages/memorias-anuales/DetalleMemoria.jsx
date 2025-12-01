@@ -96,7 +96,10 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
                 : "bg-blue-500 text-white"
             }`}
           >
-            {memoria.status || "Completada"}
+            {memoria.status ||
+              (memoria.year === new Date().getFullYear()
+                ? "En Progreso"
+                : "Completada")}
           </span>
         </div>
       </div>

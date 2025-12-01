@@ -44,7 +44,7 @@ const TextAndInput = ({
         )} */}
       </TextContainer>
       <Input
-        type={text === "Contraseña" ? "password" : "text"}
+        type={text === "Contraseña" ? "password" : "email"}
         placeholder={input}
         value={value}
         onChange={onChange}
