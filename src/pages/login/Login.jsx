@@ -15,13 +15,8 @@ const MainContainer = styled.div`
 const FormAndLogoContainer = styled(Row)`
   width: 750px;
   height: 380px;
-
   background-color: #fff;
   border-radius: 15px;
-
-  & > * {
-    border: 1px solid #e5e5e5;
-  }
 `;
 
 const LogoContainer = styled.div`

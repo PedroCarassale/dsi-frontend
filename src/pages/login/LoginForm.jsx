@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/auth/authActions";
 import { useNavigate } from "react-router-dom";
+import ForgotPasswordForm from "./ForgotPasswordForm";
 
 const MainContainer = styled(Row)`
   width: 60%;
@@ -23,16 +24,17 @@ const TitlesContainer = styled(Column)`
   gap: 10px;
 `;
 
+
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showForgot, setShowForgot] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       const result = await dispatch(login({ email, password })).unwrap();
-
       if (result.access_token) {
         console.log("Login exitoso, token recibido:", result.access_token);
         navigate("/");
@@ -41,6 +43,11 @@ const LoginForm = () => {
       console.error("Error en el login:", error);
     }
   };
+
+  if (showForgot) {
+    return <ForgotPasswordForm onBack={() => setShowForgot(false)} />;
+  }
+
   return (
     <MainContainer>
       <FormContainer>
@@ -58,12 +65,17 @@ const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <TextAndInput
-          text="Contraseña"
-          input=""
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <Row style={{ alignItems: "center", justifyContent: "space-between" }}>
+          <TextAndInput
+            text="Contraseña"
+            input=""
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button variant="link" onClick={() => setShowForgot(true)} style={{ marginLeft: 12, whiteSpace: "nowrap" }}>
+            ¿Olvidó su contraseña?
+          </Button>
+        </Row>
         <Button variant="default" onClick={handleLogin}>
           Iniciar sesión
         </Button>
