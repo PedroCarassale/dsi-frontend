@@ -73,12 +73,7 @@ function TrabajosPublicados() {
     setModalForm({ isOpen: true, publicacion: null, isEditing: false });
   };
 
-  const handleEliminar = (publicacion) => {
-    setModalEliminar({ isOpen: true, publicacion });
-    setMenuAbierto(null);
-  };
-
-    // Cerrar menú al hacer click fuera
+  // Cerrar menú al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuAbierto && !event.target.closest(".relative")) {
@@ -301,7 +296,6 @@ function TrabajosPublicados() {
         onClose={() =>
           setModalForm({ isOpen: false, publicacion: null, isEditing: false })
         }
-        onSave={handleSaveNewPublicacion}
         publicacion={modalForm.publicacion}
         isEditing={modalForm.isEditing}
       />

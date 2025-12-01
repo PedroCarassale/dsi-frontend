@@ -18,6 +18,16 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    initializeAuth: (state) => {
+      const token = localStorage.getItem("token");
+      const user = localStorage.getItem("user");
+      if (token) {
+        state.token = token;
+      }
+      if (user) {
+        state.user = JSON.parse(user);
+      }
+    },
     logout: (state) => {
       // Limpiar localStorage
       localStorage.removeItem("token");

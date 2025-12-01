@@ -7,7 +7,10 @@ import TrabajosPublicados from "./pages/trabajos-publicados/TrabajosPublicados";
 import AppLayout from "../components/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
 import Login from "./pages/login/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "../components/ProtectedRoute";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { initializeAuth } from "./store/slices/auth/authSlice";
 
 function App() {
   const dispatch = useDispatch();
