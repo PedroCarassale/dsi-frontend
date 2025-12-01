@@ -157,7 +157,9 @@ function EditarMemoria({ memoria, onBack }) {
               <BookOpen className="h-8 w-8 text-cyan-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Publicaciones</p>
+              <p className="text-sm font-medium text-gray-500">
+                Trabajos Publicados
+              </p>
               <p className="text-2xl font-semibold text-gray-900">
                 {trabajosPublicados.length}
               </p>

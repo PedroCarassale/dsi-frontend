@@ -101,7 +101,9 @@ function ModalPublicacionForm({
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-semibold text-gray-900">
-              {isEditing ? "Editar Publicación" : "Nueva Publicación"}
+              {isEditing
+                ? "Editar Trabajo Publicado"
+                : "Nuevo Trabajo Publicado"}
             </h3>
             <button
               onClick={onClose}
@@ -219,8 +221,8 @@ function ModalPublicacionForm({
               {loading
                 ? "Guardando..."
                 : isEditing
-                ? "Actualizar Publicación"
-                : "Guardar Publicación"}
+                ? "Actualizar Trabajo Publicado"
+                : "Guardar Trabajo Publicado"}
             </Button>
           </div>
         </form>

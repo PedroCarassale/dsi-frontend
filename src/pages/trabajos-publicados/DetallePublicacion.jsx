@@ -45,7 +45,7 @@ function DetallePublicacion({ publicacion, onBack, onUpdateSelected }) {
           className="flex items-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-4 py-3 rounded-md transition-colors font-medium text-lg"
         >
           <ArrowLeft className="h-6 w-6 mr-3" />
-          Volver a Publicaciones
+          Volver a Trabajos Publicados
         </button>
       </div>
 
@@ -119,7 +119,7 @@ function DetallePublicacion({ publicacion, onBack, onUpdateSelected }) {
               <FileText className="w-4 h-4 text-blue-600" />
             </div>
             <h2 className="text-2xl font-semibold text-gray-900">
-              Información de Publicación
+              Información de Trabajo Publicado
             </h2>
           </div>
         </div>

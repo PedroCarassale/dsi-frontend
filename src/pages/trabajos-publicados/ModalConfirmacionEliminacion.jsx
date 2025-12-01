@@ -1,7 +1,12 @@
 import { AlertTriangle } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 
-function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacion }) {
+function ModalConfirmacionEliminacion({
+  isOpen,
+  onClose,
+  onConfirm,
+  publicacion,
+}) {
   if (!isOpen) return null;
 
   return (
@@ -9,7 +14,9 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacion 
       <div className="bg-white rounded-lg max-w-md mx-4 w-full shadow-2xl border border-gray-200">
         {/* Header del modal */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Eliminar Publicación</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Eliminar Trabajo Publicado
+          </h3>
         </div>
 
         {/* Contenido del modal */}
@@ -20,7 +27,7 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacion 
               <AlertTriangle className="w-8 h-8 text-red-600" />
             </div>
             <p className="text-gray-700 text-center text-lg">
-              ¿Seguro desea eliminar esta publicación?
+              ¿Seguro desea eliminar este trabajo publicado?
             </p>
             {publicacion && (
               <p className="text-gray-500 text-center text-sm mt-2">
@@ -32,14 +39,10 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, publicacion 
 
         {/* Botones */}
         <div className="px-6 py-4 flex gap-3 justify-end">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={onClose}
-          >
+          <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>
-          <Button 
+          <Button
             type="button"
             onClick={() => onConfirm(publicacion)}
             className="bg-red-600 hover:bg-red-700 text-white"

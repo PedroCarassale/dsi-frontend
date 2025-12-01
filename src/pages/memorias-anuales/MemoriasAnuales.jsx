@@ -109,10 +109,19 @@ function MemoriasAnuales() {
 
   // Estadísticas calculadas
   const totalMemorias = memorias.length;
-  const completadas = memorias.filter((m) => m.status === "Completada").length;
-  const enProgreso = memorias.filter((m) => m.status === "En Progreso").length;
-  const tasaFinalizacion =
-    totalMemorias > 0 ? Math.round((completadas / totalMemorias) * 100) : 0;
+  const completadas = memorias.filter(
+    (m) => m.year === new Date().getFullYear()
+  ).length;
+  const enProgreso = memorias.filter(
+    (m) => m.year !== new Date().getFullYear()
+  ).length;
+
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const end = new Date(now.getFullYear() + 1, 0, 1);
+  const passed = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
+  const total = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+  const tasaFinalizacion = ((passed / total) * 100).toFixed(1);
 
   return (
     <>

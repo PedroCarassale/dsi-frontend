@@ -10,10 +10,32 @@ import {
 import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../context/NotificationContext";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getTrabajos } from "../../store/slices/trabajos/trabajosActions";
+import { getPatentes } from "../../store/slices/patentes/patentesActions";
+import { getTrabajos as getTrabajosSelector } from "../../store/slices/trabajos/trabajosSelector";
+import { getPatentes as getPatentesSelector } from "../../store/slices/patentes/petentesSelector";
 
 function Home() {
   const navigate = useNavigate();
   const { notifications } = useNotifications();
+  const dispatch = useDispatch();
+
+  const publicaciones = useSelector(getTrabajosSelector);
+  const patentes = useSelector(getPatentesSelector);
+
+  useEffect(() => {
+    dispatch(getTrabajos());
+    dispatch(getPatentes());
+  }, [dispatch]);
+
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const end = new Date(now.getFullYear() + 1, 0, 1);
+  const passed = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
+  const total = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+  const percent = ((passed / total) * 100).toFixed(1);
 
   // Filtrar las últimas 4 actividades para mostrar
   const recentActivities = notifications.slice(0, 4);
@@ -57,10 +79,19 @@ function Home() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 mb-1">
-              Publicaciones
+              Trabajos Publicados
             </p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">47</p>
-            <p className="text-sm text-gray-500">+12 este año</p>
+            <p className="text-3xl font-bold text-gray-900 mb-1">
+              {publicaciones.length}
+            </p>
+            <p className="text-sm text-gray-500">
+              +
+              {
+                publicaciones.filter((p) => p.year === new Date().getFullYear())
+                  .length
+              }{" "}
+              este año
+            </p>
           </div>
         </div>
 
@@ -73,8 +104,17 @@ function Home() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 mb-1">Patentes</p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">8</p>
-            <p className="text-sm text-gray-500">+3 este año</p>
+            <p className="text-3xl font-bold text-gray-900 mb-1">
+              {patentes.length}
+            </p>
+            <p className="text-sm text-gray-500">
+              +
+              {
+                patentes.filter((p) => p.year === new Date().getFullYear())
+                  .length
+              }{" "}
+              este año
+            </p>
           </div>
         </div>
 
@@ -86,9 +126,19 @@ function Home() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Progreso</p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">68%</p>
-            <p className="text-sm text-gray-500">Completado</p>
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Progreso del año
+            </p>
+            <p className="text-3xl font-bold text-gray-900 mb-1">{percent}%</p>
+            <p className="text-sm text-gray-500">
+              {(() => {
+                const now = new Date();
+                const start = new Date(now.getFullYear(), 0, 1);
+                const passed =
+                  Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
+                return `${passed} días transcurridos en el año`;
+              })()}
+            </p>
           </div>
         </div>
       </div>
@@ -136,7 +186,7 @@ function Home() {
               Administrar publicaciones, artículos y trabajos realizados
             </p>
             <div className="space-y-2 mb-6">
-              <p className="text-sm text-gray-500">Total publicaciones</p>
+              <p className="text-sm text-gray-500">Total trabajos publicados</p>
               <p className="text-sm font-medium">47 trabajos</p>
             </div>
             <Button
@@ -144,7 +194,7 @@ function Home() {
               className="w-full flex items-center justify-center gap-2"
               onClick={() => navigate("/trabajos-publicados")}
             >
-              Ver Publicaciones
+              Ver Trabajos Publicados
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
