@@ -35,16 +35,16 @@ const TextAndInput = ({
         <Typography variant="tiny" fontWeight="bold">
           {text}
         </Typography>
-        {text === "Contraseña" && (
+        {/* {text === "Contraseña" && (
           <ForgotPasswordContainer>
             <Typography variant="tiny" fontWeight="normal">
               Olvidó su contraseña?
             </Typography>
           </ForgotPasswordContainer>
-        )}
+        )} */}
       </TextContainer>
       <Input
-        type="text"
+        type={text === "Contraseña" ? "password" : "text"}
         placeholder={input}
         value={value}
         onChange={onChange}
