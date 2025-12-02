@@ -7,6 +7,7 @@ import {
   Shield,
   BookOpen,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { useState } from "react";
@@ -316,25 +317,47 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
 
       {/* Modal de confirmación de eliminación */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              ¿Eliminar memoria?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Esta acción no se puede deshacer. Se eliminará la memoria
-              permanentemente.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <Button
-                variant="outline"
+        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-md mx-4 w-full shadow-2xl border border-gray-200">
+            {/* Header del modal */}
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Eliminar Memoria</h3>
+            </div>
+
+            {/* Contenido del modal */}
+            <div className="px-6 py-6">
+              <div className="flex flex-col items-center">
+                {/* Icono de advertencia amarillo */}
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+                  <AlertTriangle className="w-8 h-8 text-yellow-600" />
+                </div>
+                <p className="text-gray-700 text-center text-lg">
+                  ¿Seguro desea eliminar esta memoria?
+                </p>
+                {memoria && (
+                  <p className="text-gray-500 text-center text-sm mt-2">
+                    "{memoria.name || `Memoria Anual ${memoria.year}`}"
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Botones */}
+            <div className="px-6 py-4 flex gap-3 justify-end">
+              <Button 
+                type="button" 
+                variant="outline" 
                 onClick={() => setShowDeleteConfirm(false)}
               >
                 Cancelar
               </Button>
-              <Button
-                className="bg-red-600 hover:bg-red-700"
-                onClick={handleDelete}
+              <Button 
+                type="button"
+                onClick={() => {
+                  handleDelete();
+                  setShowDeleteConfirm(false);
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
                 Eliminar
               </Button>

@@ -15,9 +15,9 @@ function ModalConfirmacionEliminacion({ isOpen, onClose, onConfirm, patente }) {
         {/* Contenido del modal */}
         <div className="px-6 py-6">
           <div className="flex flex-col items-center">
-            {/* Icono de peligro */}
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
+            {/* Icono de advertencia amarillo */}
+            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle className="w-8 h-8 text-yellow-600" />
             </div>
             <p className="text-gray-700 text-center text-lg">
               ¿Seguro desea eliminar esta patente?

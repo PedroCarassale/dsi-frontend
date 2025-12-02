@@ -290,19 +290,19 @@ function MemoriasAnuales() {
                     </div>
                   </div>
 
-                  {/* Barra de progreso - más larga */}
-                  {memoria.status === "En Progreso" && (
-                    <div className="mt-4 pr-32">
+                  {/* Barra de progreso - ocupa todo el espacio disponible */}
+                  {memoria.year === new Date().getFullYear() && (
+                    <div className="mt-4">
                       <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-gray-600">Progreso</span>
+                        <span className="text-gray-600">Progreso del año</span>
                         <span className="font-medium text-gray-900">
-                          {memoria.progress}%
+                          {tasaFinalizacion}%
                         </span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
                         <div
-                          className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${memoria.progress}%` }}
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full transition-all duration-500 shadow-sm"
+                          style={{ width: `${tasaFinalizacion}%` }}
                         ></div>
                       </div>
                     </div>

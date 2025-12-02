@@ -1,13 +1,22 @@
 import { Bell, Home, ChevronDown, BookOpen, Shield, FileText, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNotifications } from "../src/context/NotificationContext";
 
 function Header() {
   const navigate = useNavigate();
   const { notifications, getUnreadCount, markAsRead } = useNotifications();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState("Grupo 11");
+
+  // Grupos mockeados
+  const grupos = [
+    { id: 1, name: "Grupo 11", description: "Desarrollo de Software I" },
+    { id: 2, name: "Grupo 7", description: "Inteligencia Artificial" },
+    { id: 3, name: "Grupo 15", description: "Sistemas Distribuidos" }
+  ];
 
   const handleNotificationClick = (notification) => {
     markAsRead(notification.id);
@@ -27,6 +36,21 @@ function Header() {
         return <Bell className="h-4 w-4 text-gray-600" />;
     }
   };
+
+  // Cerrar dropdowns al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showGroupDropdown && !event.target.closest('.group-dropdown')) {
+        setShowGroupDropdown(false);
+      }
+      if (showNotifications && !event.target.closest('.notifications-dropdown')) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showGroupDropdown, showNotifications]);
 
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -69,7 +93,7 @@ function Header() {
           {/* Navegación derecha */}
           <div className="flex items-center space-x-6">
             {/* Notificaciones */}
-            <div className="relative">
+            <div className="relative notifications-dropdown">
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -142,16 +166,42 @@ function Header() {
               )}
             </div>
             {/* Dropdown Grupo */}
-            <div className="flex items-center text-sm">
+            <div className="relative flex items-center text-sm">
               <span className="text-gray-600 mr-1">Grupo:</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-900 hover:text-gray-700"
-              >
-                Grupo 11
-                <ChevronDown className="h-4 w-4 ml-1" />
-              </Button>
+              <div className="relative group-dropdown">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-900 hover:text-gray-700"
+                  onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+                >
+                  {selectedGroup}
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+
+                {/* Dropdown de grupos */}
+                {showGroupDropdown && (
+                  <div className="absolute right-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="py-2">
+                      {grupos.map((grupo) => (
+                        <button
+                          key={grupo.id}
+                          onClick={() => {
+                            setSelectedGroup(grupo.name);
+                            setShowGroupDropdown(false);
+                          }}
+                          className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${
+                            selectedGroup === grupo.name ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                          }`}
+                        >
+                          <div className="font-medium">{grupo.name}</div>
+                          <div className="text-sm text-gray-500">{grupo.description}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
