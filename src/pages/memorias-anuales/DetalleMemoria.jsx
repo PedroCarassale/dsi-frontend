@@ -13,6 +13,7 @@ import { Button } from "../../../components/ui/button";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteMemoria } from "../../store/slices/memorias/memoriasActions";
+import apiClient from "../../services/api";
 
 function DetalleMemoria({ memoria, onBack, onEdit }) {
   const dispatch = useDispatch();
@@ -23,22 +24,72 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Funciones de exportación
-  const handleExportExcel = () => {
+  const handleExportExcel = async () => {
     setExportType("Excel");
     setIsExporting(true);
-    setTimeout(() => {
+
+    try {
+      const response = await apiClient.get(`/memories/${memoria.id}/export`, {
+        responseType: "blob",
+      });
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${memoria.name || `Memoria_${memoria.year}`}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
       setIsExporting(false);
       setExportType("");
-    }, 2000); // Simula exportación por 2 segundos
+    } catch (error) {
+      console.error("Error al exportar a Excel:", error);
+      setIsExporting(false);
+      setExportType("");
+      // Aquí podrías mostrar un mensaje de error al usuario
+      alert("Error al exportar el archivo. Por favor, intenta de nuevo.");
+    }
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     setExportType("PDF");
     setIsExporting(true);
-    setTimeout(() => {
+
+    try {
+      const response = await apiClient.get(`/memories/${memoria.id}/export`, {
+        params: { pdf: true },
+        responseType: "blob",
+      });
+
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${memoria.name || `Memoria_${memoria.year}`}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
       setIsExporting(false);
       setExportType("");
-    }, 2000); // Simula exportación por 2 segundos
+    } catch (error) {
+      console.error("Error al exportar a PDF:", error);
+      setIsExporting(false);
+      setExportType("");
+      alert("Error al exportar el archivo. Por favor, intenta de nuevo.");
+    }
   };
 
   const handleDelete = async () => {

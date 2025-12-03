@@ -122,6 +122,12 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
                 {patente.code}
               </span>
             </div>
+            <div className="flex justify-between py-4 border-b border-gray-100">
+              <span className="text-gray-500 text-lg">Tipo de Propiedad</span>
+              <span className="text-gray-900 font-medium text-lg">
+                {patente.property || "Industrial"}
+              </span>
+            </div>
             <div className="flex justify-between py-4">
               <span className="text-gray-500 text-lg">Organismo</span>
               <span className="text-gray-900 font-medium text-lg">
