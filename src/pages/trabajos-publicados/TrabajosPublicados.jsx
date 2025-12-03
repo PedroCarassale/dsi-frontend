@@ -10,20 +10,24 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
+
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   getTrabajos,
   deleteTrabajo,
 } from "../../store/slices/trabajos/trabajosActions";
+
 import {
   getTrabajos as getTrabajosSelector,
   getTrabajosLoading,
   getTrabajosError,
 } from "../../store/slices/trabajos/trabajosSelector";
+
 import DetallePublicacion from "./DetallePublicacion";
 import ModalPublicacionForm from "./ModalPublicacionForm";
 import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
@@ -32,96 +36,77 @@ function TrabajosPublicados() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Redux state
   const publicaciones = useSelector(getTrabajosSelector);
   const loading = useSelector(getTrabajosLoading);
   const error = useSelector(getTrabajosError);
 
-  // Cargar trabajos al montar el componente
-  useEffect(() => {
-    dispatch(getTrabajos());
-  }, [dispatch]);
-
-  // Estados para navegación y modales
   const [publicacionSeleccionada, setPublicacionSeleccionada] = useState(null);
   const [menuAbierto, setMenuAbierto] = useState(null);
+
   const [modalEliminar, setModalEliminar] = useState({
     isOpen: false,
     publicacion: null,
   });
+
   const [modalForm, setModalForm] = useState({
     isOpen: false,
     publicacion: null,
     isEditing: false,
   });
 
+  // 🔍 Estado del buscador
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    dispatch(getTrabajos());
+  }, [dispatch]);
+
   const handleVerDetalle = (publicacion) => {
     setPublicacionSeleccionada(publicacion);
-    setMenuAbierto(null);
   };
 
-  const handleVolver = () => {
-    setPublicacionSeleccionada(null);
-  };
+  const handleVolver = () => setPublicacionSeleccionada(null);
 
-  const handleEditar = (publicacion) => {
+  const handleEditar = (publicacion) =>
     setModalForm({ isOpen: true, publicacion, isEditing: true });
-    setMenuAbierto(null);
-  };
 
-  const handleEliminar = (publicacion) => {
+  const handleEliminar = (publicacion) =>
     setModalEliminar({ isOpen: true, publicacion });
-    setMenuAbierto(null);
-  };
 
-  const confirmEliminar = (publicacion) => {
+  const confirmEliminar = (publicacion) =>
     dispatch(deleteTrabajo(publicacion.id));
-  };
 
-  const toggleMenu = (publicacionId) => {
-    setMenuAbierto(menuAbierto === publicacionId ? null : publicacionId);
-  };
-
-  const handleNuevaPublicacion = () => {
-    setModalForm({ isOpen: true, publicacion: null, isEditing: false });
-  };
-
-  const handleSaveNewPublicacion = (formData) => {
-    // El manejo de crear/actualizar ahora se hace en el modal
-    // que hace el dispatch directamente
-  };
+  const toggleMenu = (id) =>
+    setMenuAbierto(menuAbierto === id ? null : id);
 
   // Cerrar menú al hacer click fuera
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuAbierto && !event.target.closest(".relative")) {
+    const handler = (e) => {
+      if (menuAbierto && !e.target.closest(".menu-ref")) {
         setMenuAbierto(null);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, [menuAbierto]);
 
-  // Mostrar loading
   if (loading && publicaciones.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Cargando trabajos...</div>
+        <p className="text-gray-500">Cargando trabajos...</p>
       </div>
     );
   }
 
-  // Mostrar error
   if (error) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-red-500">Error: {error}</div>
+        <p className="text-red-500">Error: {error}</p>
       </div>
     );
   }
 
-  // Si hay una publicación seleccionada, mostrar el detalle
   if (publicacionSeleccionada) {
     return (
       <DetallePublicacion
@@ -132,206 +117,178 @@ function TrabajosPublicados() {
     );
   }
 
+  // =====================================================
+  // 🔍 FILTRADO
+  // =====================================================
+  const publicacionesFiltradas = publicaciones.filter((pub) => {
+    if (!searchTerm) return true;
+
+    const t = searchTerm.toLowerCase();
+
+    return (
+      pub.title?.toLowerCase().includes(t) ||
+      pub.journal?.toLowerCase().includes(t) ||
+      String(pub.year).includes(t) ||
+      pub.type?.toLowerCase().includes(t) ||
+      pub.authors?.some((a) => a.toLowerCase().includes(t))
+    );
+  });
+
   return (
     <>
-      {/* Header con breadcrumb */}
+      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
           <button
             onClick={() => navigate("/")}
-            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+            className="bg-gray-100 p-2.5 rounded-lg border hover:bg-gray-200"
           >
             <Home className="h-5 w-5 text-gray-600" />
           </button>
-          <div className="bg-cyan-100 p-2.5 rounded-lg border border-cyan-200">
+
+          <div className="bg-cyan-100 p-2.5 rounded-lg border">
             <BookOpen className="h-5 w-5 text-cyan-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Trabajos Publicados
-          </h1>
+
+          <h1 className="text-3xl font-bold text-gray-900">Trabajos Publicados</h1>
         </div>
 
-        <p className="text-gray-600 text-sm ml-20">
+        <p className="text-gray-600 ml-20 text-sm">
           Gestión de trabajos publicados y artículos del grupo
         </p>
 
-        {/* Buscador y botón */}
+        {/* Buscador */}
         <div className="flex items-center gap-4 mt-6">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Buscar Trabajos Publicados..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-white border-gray-200"
             />
           </div>
 
           <Button
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
-            onClick={handleNuevaPublicacion}
+            className="bg-blue-600 hover:bg-blue-700 flex gap-2"
+            onClick={() =>
+              setModalForm({ isOpen: true, publicacion: null, isEditing: false })
+            }
           >
-            <Plus className="h-4 w-4" />
-            Nuevo Trabajo Publicado
+            <Plus className="h-4 w-4" /> Nuevo Trabajo Publicado
           </Button>
         </div>
       </div>
 
-      {/* Cards de estadísticas */}
+      {/* Estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">
-                Total Trabajos Publicados
-              </p>
-              <p className="text-2xl font-bold text-gray-900">
-                {publicaciones.length}
-              </p>
-            </div>
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-blue-600" />
-            </div>
-          </div>
+        <div className="bg-white p-6 border rounded-lg">
+          <p className="text-sm text-gray-500">Total Trabajos Publicados</p>
+          <p className="text-2xl font-semibold">{publicaciones.length}</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Este Año</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {
-                  publicaciones.filter(
-                    (p) => p.year === new Date().getFullYear()
-                  ).length
-                }
-              </p>
-            </div>
-            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-green-600" />
-            </div>
-          </div>
+        <div className="bg-white p-6 border rounded-lg">
+          <p className="text-sm text-gray-500">Este Año</p>
+          <p className="text-2xl font-semibold">
+            {publicaciones.filter((p) => p.year === new Date().getFullYear()).length}
+          </p>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">
-                Autores Únicos
-              </p>
-              <p className="text-2xl font-bold text-gray-900">5</p>
-            </div>
-            <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Users className="w-4 h-4 text-purple-600" />
-            </div>
-          </div>
+        <div className="bg-white p-6 border rounded-lg">
+          <p className="text-sm text-gray-500">Autores Únicos</p>
+          <p className="text-2xl font-semibold">
+            {new Set(publicaciones.flatMap((p) => p.authors || [])).size}
+          </p>
         </div>
       </div>
 
-      {/* Título de sección */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Lista de Trabajos Publicados y Artículos
-        </h3>
+      {/* Título sección */}
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Lista de Trabajos</h3>
         <span className="text-sm text-gray-500">
-          {publicaciones.length} publicaciones
+          {publicacionesFiltradas.length} de {publicaciones.length} resultados
         </span>
       </div>
 
-      {/* Lista de publicaciones */}
+      {/* =====================================================
+          RESULTADOS
+      ===================================================== */}
       <div className="space-y-4">
-        {publicaciones.map((pub) => (
-          <div
-            key={pub.id}
-            className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {pub.title}
-                </h3>
-                <p className="text-gray-600 mb-3">{pub.journal}</p>
+        {/* ⛔ No resultados */}
+        {publicacionesFiltradas.length === 0 && (
+          <div className="text-center py-10 text-gray-500 text-lg">
+            No se encontraron resultados para la búsqueda.
+          </div>
+        )}
 
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                  <div className="flex items-center">
-                    <Users className="h-4 w-4 mr-1" />
-                    {pub.authors?.length || 0} autores
+        {/* ✅ Lista */}
+        {publicacionesFiltradas.length > 0 &&
+          publicacionesFiltradas.map((pub) => (
+            <div
+              key={pub.id}
+              className="bg-white border p-6 rounded-lg hover:shadow-sm transition"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-lg font-semibold">{pub.title}</h3>
+                  <p className="text-gray-600">{pub.journal}</p>
+                  <div className="flex gap-4 text-sm text-gray-500 mt-2">
+                    <span className="flex items-center gap-1">
+                      <Users className="h-4 w-4" />
+                      {pub.authors?.length || 0} autores
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {pub.year}
+                    </span>
                   </div>
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    {pub.year}
-                  </div>
+                  <span className="inline-block mt-3 px-3 py-1 text-sm bg-gray-100 rounded-full">
+                    {pub.type}
+                  </span>
                 </div>
 
-                {/* Badge del tipo */}
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                  {pub.type === "article"
-                    ? "Artículo"
-                    : pub.type === "book"
-                    ? "Libro"
-                    : pub.type === "book_chapter"
-                    ? "Capítulo de libro"
-                    : pub.type}
-                </span>
-              </div>
-
-              {/* Botones de acción */}
-              <div className="flex items-center gap-2 ml-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-                  onClick={() => handleVerDetalle(pub)}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Ver Detalles
-                </Button>
-
-                {/* Botón de más opciones con menú */}
-                <div className="relative">
-                  <button
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleMenu(pub.id);
-                    }}
+                <div className="flex items-center gap-2 menu-ref">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleVerDetalle(pub)}
                   >
-                    <MoreVertical className="h-5 w-5" />
-                  </button>
+                    <Eye className="h-4 w-4 mr-2" /> Ver Detalles
+                  </Button>
 
-                  {/* Menú desplegable */}
-                  {menuAbierto === pub.id && (
-                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
-                      <div className="py-1">
+                  <div className="relative">
+                    <button
+                      className="p-1 text-gray-400 hover:text-gray-600"
+                      onClick={() => toggleMenu(pub.id)}
+                    >
+                      <MoreVertical />
+                    </button>
+
+                    {menuAbierto === pub.id && (
+                      <div className="absolute right-0 mt-1 w-40 bg-white border rounded shadow-md z-10">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditar(pub);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+                          onClick={() => handleEditar(pub)}
                         >
-                          <Edit className="h-4 w-4 mr-2" />
-                          Editar
+                          <Edit className="h-4 w-4" /> Editar
                         </button>
+
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEliminar(pub);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          onClick={() => handleEliminar(pub)}
                         >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Eliminar
+                          <Trash2 className="h-4 w-4" /> Eliminar
                         </button>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
-      {/* Modal de confirmación de eliminación */}
+      {/* Modales */}
       <ModalConfirmacionEliminacion
         isOpen={modalEliminar.isOpen}
         onClose={() => setModalEliminar({ isOpen: false, publicacion: null })}
@@ -339,13 +296,11 @@ function TrabajosPublicados() {
         publicacion={modalEliminar.publicacion}
       />
 
-      {/* Modal de formulario (nuevo/editar) */}
       <ModalPublicacionForm
         isOpen={modalForm.isOpen}
         onClose={() =>
           setModalForm({ isOpen: false, publicacion: null, isEditing: false })
         }
-        onSave={handleSaveNewPublicacion}
         publicacion={modalForm.publicacion}
         isEditing={modalForm.isEditing}
       />

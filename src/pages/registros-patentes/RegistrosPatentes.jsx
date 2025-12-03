@@ -23,6 +23,7 @@ import {
   getPatentesLoading,
   getPatentesError,
 } from "../../store/slices/patentes/petentesSelector";
+
 import DetallePatente from "./DetallePatente";
 import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 import ModalPatenteForm from "./ModalPatenteForm";
@@ -31,17 +32,14 @@ function RegistrosPatentes() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Redux state
   const patentes = useSelector(getPatentesSelector);
   const loading = useSelector(getPatentesLoading);
   const error = useSelector(getPatentesError);
 
-  // Cargar patentes al montar el componente
   useEffect(() => {
     dispatch(getPatentes());
   }, [dispatch]);
 
-  // Estados para navegación y modales
   const [selectedPatente, setSelectedPatente] = useState(null);
   const [menuAbierto, setMenuAbierto] = useState(null);
   const [modalEliminar, setModalEliminar] = useState({
@@ -54,7 +52,10 @@ function RegistrosPatentes() {
     isEditing: false,
   });
 
-  // Calcular estadísticas
+  // 🔍 estado del buscador
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // estadísticas
   const totalPatentes = patentes.length;
   const esteAño = patentes.filter(
     (p) => p.year === new Date().getFullYear()
@@ -91,7 +92,7 @@ function RegistrosPatentes() {
     setModalForm({ isOpen: true, patente: null, isEditing: false });
   };
 
-  // Cerrar menú al hacer click fuera
+  // cerrar menú al click afuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuAbierto && !event.target.closest(".relative")) {
@@ -101,11 +102,11 @@ function RegistrosPatentes() {
 
     if (menuAbierto) {
       document.addEventListener("click", handleClickOutside);
-      return () => document.removeEventListener("click", handleClickOutside);
+      return () =>
+        document.removeEventListener("click", handleClickOutside);
     }
   }, [menuAbierto]);
 
-  // Si hay una patente seleccionada, mostrar el detalle
   if (selectedPatente) {
     return (
       <DetallePatente
@@ -116,7 +117,6 @@ function RegistrosPatentes() {
     );
   }
 
-  // Mostrar loading
   if (loading && patentes.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -125,7 +125,6 @@ function RegistrosPatentes() {
     );
   }
 
-  // Mostrar error
   if (error) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -134,20 +133,37 @@ function RegistrosPatentes() {
     );
   }
 
+  // ===========================================================
+  // 🔍 FILTRO DE PATENTES
+  // ===========================================================
+  const patentesFiltradas = patentes.filter((p) => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+
+    return (
+      p.title?.toLowerCase().includes(term) ||
+      p.code?.toLowerCase().includes(term) ||
+      String(p.year || "").includes(term) ||
+      p.organization?.toLowerCase().includes(term)
+    );
+  });
+
   return (
     <>
-      {/* Sección de título con breadcrumb */}
+      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
           <button
             onClick={() => navigate("/")}
-            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200"
           >
             <Home className="h-5 w-5 text-gray-600" />
           </button>
+
           <div className="bg-green-100 p-2.5 rounded-lg border border-green-200">
             <Shield className="h-5 w-5 text-green-600" />
           </div>
+
           <h1 className="text-3xl font-bold text-gray-900">
             Registros y Patentes
           </h1>
@@ -157,12 +173,14 @@ function RegistrosPatentes() {
           Gestión de propiedad intelectual del grupo
         </p>
 
-        {/* Buscador y botón */}
+        {/* Buscador */}
         <div className="flex items-center gap-4 mt-6">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Buscar patentes..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-white border-gray-200"
             />
           </div>
@@ -177,149 +195,131 @@ function RegistrosPatentes() {
         </div>
       </div>
 
-      {/* Cards de estadísticas */}
+      {/* Estadísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {/* Total Patentes */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Shield className="h-8 w-8 text-green-600" />
-            </div>
+            <Shield className="h-8 w-8 text-green-600" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
-                Total Patentes
-              </p>
+              <p className="text-sm text-gray-500">Total Patentes</p>
               <p className="text-2xl font-semibold text-gray-900">
                 {totalPatentes}
               </p>
-              <p className="text-sm text-gray-500 mt-1">Registradas</p>
             </div>
           </div>
         </div>
 
-        {/* Este Año */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Calendar className="h-8 w-8 text-blue-600" />
-            </div>
+            <Calendar className="h-8 w-8 text-blue-600" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Este Año</p>
+              <p className="text-sm text-gray-500">Este Año</p>
               <p className="text-2xl font-semibold text-gray-900">{esteAño}</p>
-              <p className="text-sm text-gray-500 mt-1">2025</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Título de sección */}
+      {/* Título sección */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
           Lista de Patentes y Registros
         </h3>
         <span className="text-sm text-gray-500">
-          {patentes.length} registros
+          {patentesFiltradas.length} de {patentes.length} registros
         </span>
       </div>
 
-      {/* Lista de Patentes - Cards individuales */}
-      <div className="space-y-4">
-        {patentes.map((patente) => (
-          <div
-            key={patente.id}
-            className="bg-white rounded-lg border border-gray-200 p-6"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start space-x-4 flex-1">
-                <div className="flex-shrink-0">
+      {/* ===========================================================
+          RESULTADOS FILTRADOS
+      =========================================================== */}
+
+      {patentesFiltradas.length === 0 ? (
+        <div className="text-center text-gray-500 py-10 text-lg">
+          No se encontraron resultados para la búsqueda.
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {patentesFiltradas.map((patente) => (
+            <div
+              key={patente.id}
+              className="bg-white rounded-lg border border-gray-200 p-6"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-4 flex-1">
                   <div className="bg-green-100 p-3 rounded-lg border border-green-200">
                     <Shield className="h-6 w-6 text-green-600" />
                   </div>
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                    {patente.title}
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-2">
-                    Código: {patente.code}
-                  </p>
 
-                  {/* Información adicional con iconos */}
-                  <div className="flex items-center gap-6 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-gray-900">
+                      {patente.title}
+                    </h4>
+
+                    <p className="text-sm text-gray-600">
+                      Código: {patente.code}
+                    </p>
+
+                    <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                       <Calendar className="h-4 w-4 text-gray-400" />
-                      <span>{patente.year}</span>
+                      {patente.year}
                     </div>
-                  </div>
 
-                  {/* Badge del tipo */}
-                  <div className="mt-3">
-                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="inline-block mt-3 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
                       {patente.organization}
                     </span>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                {/* Botón Ver Detalles */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-                  onClick={() => handleVerDetalle(patente)}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Ver Detalles
-                </Button>
-
-                {/* Botón de más opciones con menú */}
-                <div className="relative">
-                  <button
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleMenu(patente.id);
-                    }}
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleVerDetalle(patente)}
+                    className="text-gray-600 border-gray-300"
                   >
-                    <MoreVertical className="h-5 w-5" />
-                  </button>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Ver Detalles
+                  </Button>
 
-                  {/* Menú desplegable */}
-                  {menuAbierto === patente.id && (
-                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
-                      <div className="py-1">
+                  <div className="relative">
+                    <button
+                      className="text-gray-400 hover:text-gray-600 p-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMenu(patente.id);
+                      }}
+                    >
+                      <MoreVertical className="h-5 w-5" />
+                    </button>
+
+                    {menuAbierto === patente.id && (
+                      <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditar(patente);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => handleEditar(patente)}
+                          className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         >
                           <Edit className="h-4 w-4 mr-2" />
                           Editar
                         </button>
+
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEliminar(patente);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          onClick={() => handleEliminar(patente)}
+                          className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Eliminar
                         </button>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Modal de confirmación de eliminación */}
       <ModalConfirmacionEliminacion
         isOpen={modalEliminar.isOpen}
         onClose={() => setModalEliminar({ isOpen: false, patente: null })}
@@ -327,7 +327,6 @@ function RegistrosPatentes() {
         patente={modalEliminar.patente}
       />
 
-      {/* Modal de formulario (nuevo/editar) */}
       <ModalPatenteForm
         isOpen={modalForm.isOpen}
         onClose={() =>
