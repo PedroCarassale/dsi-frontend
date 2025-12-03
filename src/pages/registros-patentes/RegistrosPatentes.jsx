@@ -252,8 +252,11 @@ function RegistrosPatentes() {
                     </div>
                   </div>
 
-                  {/* Badge del tipo */}
-                  <div className="mt-3">
+                  {/* Badges del tipo */}
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                      {patente.property || "Industrial"}
+                    </span>
                     <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
                       {patente.organization}
                     </span>

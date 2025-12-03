@@ -19,6 +19,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
     code: patente?.code || "",
     description: patente?.description || "",
     organization: patente?.organization || "",
+    property: patente?.property || "Industrial",
     year: patente?.year || new Date().getFullYear(),
   });
 
@@ -30,6 +31,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
         code: patente.code || "",
         description: patente.description || "",
         organization: patente.organization || "",
+        property: patente.property || "Industrial",
         year: patente.year || new Date().getFullYear(),
       });
     } else {
@@ -38,6 +40,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
         code: "",
         description: "",
         organization: "",
+        property: "Industrial",
         year: new Date().getFullYear(),
       });
     }
@@ -156,6 +159,22 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
                 className="w-full min-h-32 px-3 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
                 required
               />
+            </div>
+
+            {/* Tipo de Propiedad */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tipo de Propiedad <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={formData.property}
+                onChange={(e) => handleInputChange("property", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value="Industrial">Industrial</option>
+                <option value="Intelectual">Intelectual</option>
+              </select>
             </div>
 
             {/* Organismo Competente */}
