@@ -18,12 +18,10 @@ import apiClient from "../../services/api";
 function DetalleMemoria({ memoria, onBack, onEdit }) {
   const dispatch = useDispatch();
 
-  // Estado para el popup de exportación y eliminación
   const [isExporting, setIsExporting] = useState(false);
   const [exportType, setExportType] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Funciones de exportación
   const handleExportExcel = async () => {
     setExportType("Excel");
     setIsExporting(true);
@@ -53,7 +51,6 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
       console.error("Error al exportar a Excel:", error);
       setIsExporting(false);
       setExportType("");
-      // Aquí podrías mostrar un mensaje de error al usuario
       alert("Error al exportar el archivo. Por favor, intenta de nuevo.");
     }
   };
