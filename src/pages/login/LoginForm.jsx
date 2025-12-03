@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/auth/authActions";
 import { useNavigate } from "react-router-dom";
+import { AlignCenter } from "lucide-react";
 
 const MainContainer = styled(Row)`
   width: 60%;
@@ -23,9 +24,20 @@ const TitlesContainer = styled(Column)`
   gap: 10px;
 `;
 
+const ButtonAndErrorLabel = styled(Column)`
+  gap: 5px;
+`;
+
+const ErrorLabel = styled.div`
+  display: flex;
+  align-items: center;
+  justify-items: center;
+`;
+
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -35,10 +47,11 @@ const LoginForm = () => {
 
       if (result.access_token) {
         console.log("Login exitoso, token recibido:", result.access_token);
+        setLoginError(false);
         navigate("/");
       }
-    } catch (error) {
-      console.error("Error en el login:", error);
+    } catch {
+      setLoginError(true);
     }
   };
   return (
@@ -64,9 +77,22 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button variant="default" onClick={handleLogin}>
-          Iniciar sesión
-        </Button>
+        <ButtonAndErrorLabel>
+          {loginError && (
+            <ErrorLabel>
+              <Typography
+                variant="small"
+                color="red"
+                style={{ color: "red", textAlign: "center" }}
+              >
+                Credenciales inválidas
+              </Typography>
+            </ErrorLabel>
+          )}
+          <Button variant="default" onClick={handleLogin}>
+            Iniciar sesión
+          </Button>
+        </ButtonAndErrorLabel>
       </FormContainer>
     </MainContainer>
   );
