@@ -10,17 +10,19 @@ import {
 import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../context/NotificationContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTrabajos } from "../../store/slices/trabajos/trabajosActions";
 import { getPatentes } from "../../store/slices/patentes/patentesActions";
 import { getTrabajos as getTrabajosSelector } from "../../store/slices/trabajos/trabajosSelector";
 import { getPatentes as getPatentesSelector } from "../../store/slices/patentes/petentesSelector";
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 
 function Home() {
   const navigate = useNavigate();
   const { notifications } = useNotifications();
   const dispatch = useDispatch();
+  const { isDarkMode, getStyleClass } = useThemeStyles();
 
   const publicaciones = useSelector(getTrabajosSelector);
   const patentes = useSelector(getPatentesSelector);
@@ -42,49 +44,49 @@ function Home() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Bienvenido al Sistema DSI
-        </h1>
-        <p className="text-gray-600">
-          Sistema de gestión para el Departamento de Sistemas de Información
-        </p>
-      </div>
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className={`text-3xl font-bold mb-2 transition-colors ${getStyleClass('text.primary')}`}>
+            Bienvenido al Sistema DSI
+          </h1>
+          <p className={`transition-colors ${getStyleClass('text.secondary')}`}>
+            Sistema de gestión para el Departamento de Sistemas de Información
+          </p>
+        </div>
 
       {/* Estadísticas principales */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {/* Memoria Anual */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-6 h-6 text-blue-600" />
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getStyleClass('iconBg.blue')}`}>
+              <FileText className={`w-6 h-6 ${getStyleClass('icons.blue')}`} />
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">
+            <p className={`text-sm font-medium mb-1 ${getStyleClass('text.muted')}`}>
               Memoria Anual
             </p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">2025</p>
-            <p className="text-sm text-gray-500">En Progreso</p>
+            <p className={`text-3xl font-bold mb-1 ${getStyleClass('text.primary')}`}>2025</p>
+            <p className={`text-sm ${getStyleClass('text.muted')}`}>En Progreso</p>
           </div>
         </div>
 
         {/* Publicaciones */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-cyan-600" />
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getStyleClass('iconBg.cyan')}`}>
+              <BookOpen className={`w-6 h-6 ${getStyleClass('icons.cyan')}`} />
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">
+            <p className={`text-sm font-medium mb-1 ${getStyleClass('text.muted')}`}>
               Trabajos Publicados
             </p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">
+            <p className={`text-3xl font-bold mb-1 ${getStyleClass('text.primary')}`}>
               {publicaciones.length}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className={`text-sm ${getStyleClass('text.muted')}`}>
               +
               {
                 publicaciones.filter((p) => p.year === new Date().getFullYear())
@@ -96,18 +98,18 @@ function Home() {
         </div>
 
         {/* Patentes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Shield className="w-6 h-6 text-green-600" />
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getStyleClass('iconBg.green')}`}>
+              <Shield className={`w-6 h-6 ${getStyleClass('icons.green')}`} />
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Patentes</p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">
+            <p className={`text-sm font-medium mb-1 ${getStyleClass('text.muted')}`}>Patentes</p>
+            <p className={`text-3xl font-bold mb-1 ${getStyleClass('text.primary')}`}>
               {patentes.length}
             </p>
-            <p className="text-sm text-gray-500">
+            <p className={`text-sm ${getStyleClass('text.muted')}`}>
               +
               {
                 patentes.filter((p) => p.year === new Date().getFullYear())
@@ -119,18 +121,18 @@ function Home() {
         </div>
 
         {/* Progreso */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-emerald-600" />
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getStyleClass('iconBg.emerald')}`}>
+              <TrendingUp className={`w-6 h-6 ${getStyleClass('icons.emerald')}`} />
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">
+            <p className={`text-sm font-medium mb-1 ${getStyleClass('text.muted')}`}>
               Progreso del año
             </p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">{percent}%</p>
-            <p className="text-sm text-gray-500">
+            <p className={`text-3xl font-bold mb-1 ${getStyleClass('text.primary')}`}>{percent}%</p>
+            <p className={`text-sm ${getStyleClass('text.muted')}`}>
               {(() => {
                 const now = new Date();
                 const start = new Date(now.getFullYear(), 0, 1);
@@ -145,28 +147,28 @@ function Home() {
 
       {/* Módulos de Gestión */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <h2 className={`text-xl font-semibold mb-6 transition-colors ${getStyleClass('text.primary')}`}>
           Módulos de Gestión
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Memoria Anual */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-              <FileText className="w-6 h-6 text-blue-600" />
+          <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')} ${getStyleClass('card.hover')}`}>
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${getStyleClass('iconBg.blue')}`}>
+              <FileText className={`w-6 h-6 ${getStyleClass('icons.blue')}`} />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className={`text-lg font-semibold mb-2 transition-colors ${getStyleClass('text.primary')}`}>
               Memoria Anual
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className={`text-sm mb-4 transition-colors ${getStyleClass('text.secondary')}`}>
               Crear y gestionar la memoria anual del grupo de investigación
             </p>
             <div className="space-y-2 mb-6">
-              <p className="text-sm text-gray-500">Última actualización</p>
-              <p className="text-sm font-medium">Hace 2 días</p>
+              <p className={`text-sm ${getStyleClass('text.muted')}`}>Última actualización</p>
+              <p className={`text-sm font-medium ${getStyleClass('text.primary')}`}>Hace 2 días</p>
             </div>
             <Button
               variant="outline"
-              className="w-full flex items-center justify-center gap-2"
+              className={`w-full flex items-center justify-center gap-2 transition-colors ${getStyleClass('button.outline')}`}
               onClick={() => navigate("/memorias-anuales")}
             >
               Gestionar Memoria
@@ -175,23 +177,23 @@ function Home() {
           </div>
 
           {/* Trabajos Publicados */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mb-4">
-              <BookOpen className="w-6 h-6 text-cyan-600" />
+          <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')} ${getStyleClass('card.hover')}`}>
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${getStyleClass('iconBg.cyan')}`}>
+              <BookOpen className={`w-6 h-6 ${getStyleClass('icons.cyan')}`} />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className={`text-lg font-semibold mb-2 transition-colors ${getStyleClass('text.primary')}`}>
               Trabajos Publicados
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className={`text-sm mb-4 transition-colors ${getStyleClass('text.secondary')}`}>
               Administrar publicaciones, artículos y trabajos realizados
             </p>
             <div className="space-y-2 mb-6">
-              <p className="text-sm text-gray-500">Total trabajos publicados</p>
-              <p className="text-sm font-medium">47 trabajos</p>
+              <p className={`text-sm ${getStyleClass('text.muted')}`}>Total trabajos publicados</p>
+              <p className={`text-sm font-medium ${getStyleClass('text.primary')}`}>47 trabajos</p>
             </div>
             <Button
               variant="outline"
-              className="w-full flex items-center justify-center gap-2"
+              className={`w-full flex items-center justify-center gap-2 transition-colors ${getStyleClass('button.outline')}`}
               onClick={() => navigate("/trabajos-publicados")}
             >
               Ver Trabajos Publicados
@@ -200,23 +202,23 @@ function Home() {
           </div>
 
           {/* Registros y Patentes */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-              <Shield className="w-6 h-6 text-green-600" />
+          <div className={`rounded-lg border p-6 transition-all duration-300 ${getStyleClass('card')} ${getStyleClass('card.hover')}`}>
+            <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${getStyleClass('iconBg.green')}`}>
+              <Shield className={`w-6 h-6 ${getStyleClass('icons.green')}`} />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className={`text-lg font-semibold mb-2 transition-colors ${getStyleClass('text.primary')}`}>
               Registros y Patentes
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className={`text-sm mb-4 transition-colors ${getStyleClass('text.secondary')}`}>
               Gestionar patentes, registros y propiedad intelectual
             </p>
             <div className="space-y-2 mb-6">
-              <p className="text-sm text-gray-500">Patentes activas</p>
-              <p className="text-sm font-medium">8 registros</p>
+              <p className={`text-sm ${getStyleClass('text.muted')}`}>Patentes activas</p>
+              <p className={`text-sm font-medium ${getStyleClass('text.primary')}`}>8 registros</p>
             </div>
             <Button
               variant="outline"
-              className="w-full flex items-center justify-center gap-2"
+              className={`w-full flex items-center justify-center gap-2 transition-colors ${getStyleClass('button.outline')}`}
               onClick={() => navigate("/registros-patentes")}
             >
               Ver Patentes
@@ -226,43 +228,43 @@ function Home() {
         </div>
       </div>
 
-      {/* Actividad Reciente */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
-          Actividad Reciente
-        </h2>
+        {/* Actividad Reciente */}
+        <div>
+          <h2 className={`text-xl font-semibold mb-6 transition-colors ${getStyleClass('text.primary')}`}>
+            Actividad Reciente
+          </h2>
         <div className="space-y-4">
           {recentActivities.map((activity) => {
             const getActivityIcon = () => {
               switch (activity.type) {
                 case "publicacion":
-                  return <BookOpen className="h-6 w-6 text-cyan-600" />;
+                  return <BookOpen className={`h-6 w-6 ${getStyleClass('icons.cyan')}`} />;
                 case "patente":
-                  return <Shield className="h-6 w-6 text-green-600" />;
+                  return <Shield className={`h-6 w-6 ${getStyleClass('icons.green')}`} />;
                 case "memoria":
-                  return <FileText className="h-6 w-6 text-blue-600" />;
+                  return <FileText className={`h-6 w-6 ${getStyleClass('icons.blue')}`} />;
                 default:
-                  return <FileText className="h-6 w-6 text-gray-600" />;
+                  return <FileText className={`h-6 w-6 ${getStyleClass('icons.gray')}`} />;
               }
             };
 
             const getActivityBgColor = () => {
               switch (activity.type) {
                 case "publicacion":
-                  return "bg-cyan-100 border-cyan-200";
+                  return getStyleClass('iconBg.cyan');
                 case "patente":
-                  return "bg-green-100 border-green-200";
+                  return getStyleClass('iconBg.green');
                 case "memoria":
-                  return "bg-blue-100 border-blue-200";
+                  return getStyleClass('iconBg.blue');
                 default:
-                  return "bg-gray-100 border-gray-200";
+                  return isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-100 border-gray-200';
               }
             };
 
             return (
               <div
                 key={activity.id}
-                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
+                className={`rounded-lg border p-6 transition-all duration-300 cursor-pointer ${getStyleClass('card')} ${getStyleClass('card.hover')}`}
                 onClick={() => navigate(activity.link)}
               >
                 <div className="flex items-start justify-between">
@@ -275,14 +277,14 @@ function Home() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                      <h4 className={`text-lg font-semibold mb-1 transition-colors ${getStyleClass('text.primary')}`}>
                         {activity.title}
                       </h4>
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className={`text-sm mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                         {activity.message}
                       </p>
 
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className={`flex items-center gap-4 text-sm transition-colors ${getStyleClass('text.muted')}`}>
                         <div className="flex items-center">
                           <Calendar className="h-4 w-4 mr-1" />
                           <span>{activity.time}</span>
@@ -295,9 +297,10 @@ function Home() {
             );
           })}
         </div>
+        </div>
       </div>
-    </div>
   );
 }
 
 export default Home;
+

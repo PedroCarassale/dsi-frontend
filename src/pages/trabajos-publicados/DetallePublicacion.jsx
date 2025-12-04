@@ -183,3 +183,4 @@ function DetallePublicacion({ publicacion, onBack, onUpdateSelected }) {
 }
 
 export default DetallePublicacion;
+

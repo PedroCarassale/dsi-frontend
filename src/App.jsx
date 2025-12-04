@@ -6,14 +6,16 @@ import RegistrosPatentes from "./pages/registros-patentes/RegistrosPatentes";
 import TrabajosPublicados from "./pages/trabajos-publicados/TrabajosPublicados";
 import AppLayout from "../components/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
+import { DarkModeProvider } from "./context/DarkModeContext";
 import Login from "./pages/login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <div className="app">
-      <NotificationProvider>
-        <AppLayout>
+      <DarkModeProvider>
+        <NotificationProvider>
+          <AppLayout>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route
@@ -58,7 +60,8 @@ function App() {
             />
           </Routes>
         </AppLayout>
-      </NotificationProvider>
+        </NotificationProvider>
+      </DarkModeProvider>
     </div>
   );
 }

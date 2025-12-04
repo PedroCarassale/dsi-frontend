@@ -8,6 +8,8 @@ import {
   MoreVertical,
   Edit,
   Trash2,
+  TrendingUp,
+  Factory,
 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
@@ -26,6 +28,7 @@ import {
 import DetallePatente from "./DetallePatente";
 import ModalConfirmacionEliminacion from "./ModalConfirmacionEliminacion";
 import ModalPatenteForm from "./ModalPatenteForm";
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 
 function RegistrosPatentes() {
   const navigate = useNavigate();
@@ -53,6 +56,9 @@ function RegistrosPatentes() {
     patente: null,
     isEditing: false,
   });
+
+  // Theme styles hook
+  const { isDarkMode, getStyleClass } = useThemeStyles();
 
   // Calcular estadísticas
   const totalPatentes = patentes.length;
@@ -119,8 +125,10 @@ function RegistrosPatentes() {
   // Mostrar loading
   if (loading && patentes.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Cargando patentes...</div>
+      <div className={`min-h-screen transition-all duration-300 ${getStyleClass('background')}`}>
+        <div className="flex items-center justify-center h-64">
+          <div className={getStyleClass('text.secondary')}>Cargando patentes...</div>
+        </div>
       </div>
     );
   }
@@ -128,219 +136,254 @@ function RegistrosPatentes() {
   // Mostrar error
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-red-500">Error: {error}</div>
+      <div className={`min-h-screen transition-all duration-300 ${getStyleClass('background')}`}>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-red-500">Error: {error}</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
-      {/* Sección de título con breadcrumb */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <button
-            onClick={() => navigate("/")}
-            className="bg-gray-100 p-2.5 rounded-lg border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
-          >
-            <Home className="h-5 w-5 text-gray-600" />
-          </button>
-          <div className="bg-green-100 p-2.5 rounded-lg border border-green-200">
-            <Shield className="h-5 w-5 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Registros y Patentes
-          </h1>
-        </div>
-
-        <p className="text-gray-600 text-sm ml-20">
-          Gestión de propiedad intelectual del grupo
-        </p>
-
-        {/* Buscador y botón */}
-        <div className="flex items-center gap-4 mt-6">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Buscar patentes..."
-              className="pl-10 bg-white border-gray-200"
-            />
+    <div className={`min-h-screen transition-all duration-300 ${getStyleClass('background')}`}>
+      <div className="max-w-7xl mx-auto p-6">
+        <div className={getStyleClass('text.primary')}>
+          {/* Sección de título con breadcrumb */}
+          <div className="mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <button
+              onClick={() => navigate("/")}
+              className={`p-2.5 rounded-lg border transition-colors cursor-pointer ${getStyleClass('button.home')}`}
+            >
+              <Home className="h-5 w-5" />
+            </button>
+            <div className={`p-2.5 rounded-lg border ${getStyleClass('iconBg.green')}`}>
+              <Shield className={`h-5 w-5 ${getStyleClass('icons.green')}`} />
+            </div>
+            <h1 className={`text-3xl font-bold ${getStyleClass('text.primary')}`}>
+              Registros y Patentes
+            </h1>
           </div>
 
-          <Button
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
-            onClick={handleNuevaPatente}
-          >
-            <Plus className="h-4 w-4" />
-            Nueva Patente
-          </Button>
-        </div>
-      </div>
+          <p className={`text-sm ml-20 ${getStyleClass('text.secondary')}`}>
+            Gestión de propiedad intelectual del grupo
+          </p>
 
-      {/* Cards de estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {/* Total Patentes */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Shield className="h-8 w-8 text-green-600" />
+          {/* Buscador y botón */}
+          <div className="flex items-center gap-4 mt-6">
+            <div className="relative flex-1 max-w-md">
+              <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 ${getStyleClass('icons.gray')}`} />
+              <Input
+                placeholder="Buscar patentes..."
+                className={`pl-10 border transition-colors ${getStyleClass('input')}`}
+              />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
-                Total Patentes
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {totalPatentes}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">Registradas</p>
-            </div>
+
+            <Button
+              className={`flex items-center gap-2 transition-colors ${getStyleClass('button.primary')}`}
+              onClick={handleNuevaPatente}
+            >
+              <Plus className="h-4 w-4" />
+              Nueva Patente
+            </Button>
           </div>
-        </div>
-
-        {/* Este Año */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Calendar className="h-8 w-8 text-blue-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Este Año</p>
-              <p className="text-2xl font-semibold text-gray-900">{esteAño}</p>
-              <p className="text-sm text-gray-500 mt-1">2025</p>
-            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Título de sección */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          Lista de Patentes y Registros
-        </h3>
-        <span className="text-sm text-gray-500">
-          {patentes.length} registros
-        </span>
-      </div>
-
-      {/* Lista de Patentes - Cards individuales */}
-      <div className="space-y-4">
-        {patentes.map((patente) => (
-          <div
-            key={patente.id}
-            className="bg-white rounded-lg border border-gray-200 p-6"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start space-x-4 flex-1">
+          {/* Cards de estadísticas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Total Patentes */}
+            <div className={`rounded-lg border p-6 transition-colors ${getStyleClass('card')}`}>
+              <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="bg-green-100 p-3 rounded-lg border border-green-200">
-                    <Shield className="h-6 w-6 text-green-600" />
-                  </div>
+                  <Shield className={`h-8 w-8 ${getStyleClass('icons.green')}`} />
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                    {patente.title}
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-2">
-                    Código: {patente.code}
+                <div className="ml-4">
+                  <p className={`text-sm font-medium ${getStyleClass('text.secondary')}`}>
+                    Total Patentes
                   </p>
-
-                  {/* Información adicional con iconos */}
-                  <div className="flex items-center gap-6 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4 text-gray-400" />
-                      <span>{patente.year}</span>
-                    </div>
-                  </div>
-
-                  {/* Badges del tipo */}
-                  <div className="mt-3 flex items-center gap-2">
-                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-                      {patente.property || "Industrial"}
-                    </span>
-                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-                      {patente.organization}
-                    </span>
-                  </div>
+                  <p className={`text-2xl font-semibold ${getStyleClass('text.primary')}`}>
+                    {totalPatentes}
+                  </p>
                 </div>
               </div>
+            </div>
 
-              <div className="flex items-center gap-2">
-                {/* Botón Ver Detalles */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400"
-                  onClick={() => handleVerDetalle(patente)}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Ver Detalles
-                </Button>
+            {/* Este Año */}
+            <div className={`rounded-lg border p-6 transition-colors ${getStyleClass('card')}`}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <Calendar className={`h-8 w-8 ${getStyleClass('icons.blue')}`} />
+                </div>
+                <div className="ml-4">
+                  <p className={`text-sm font-medium ${getStyleClass('text.secondary')}`}>Este Año</p>
+                  <p className={`text-2xl font-semibold ${getStyleClass('text.primary')}`}>{esteAño}</p>
+                </div>
+              </div>
+            </div>
 
-                {/* Botón de más opciones con menú */}
-                <div className="relative">
-                  <button
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleMenu(patente.id);
-                    }}
-                  >
-                    <MoreVertical className="h-5 w-5" />
-                  </button>
+            {/* Industriales */}
+            <div className={`rounded-lg border p-6 transition-colors ${getStyleClass('card')}`}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <Factory className={`h-8 w-8 ${getStyleClass('icons.cyan')}`} />
+                </div>
+                <div className="ml-4">
+                  <p className={`text-sm font-medium ${getStyleClass('text.secondary')}`}>Industriales</p>
+                  <p className={`text-2xl font-semibold ${getStyleClass('text.primary')}`}>
+                    {patentes.filter(p => p.type === 'Industrial').length}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                  {/* Menú desplegable */}
-                  {menuAbierto === patente.id && (
-                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-10">
-                      <div className="py-1">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditar(patente);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        >
-                          <Edit className="h-4 w-4 mr-2" />
-                          Editar
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEliminar(patente);
-                          }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Eliminar
-                        </button>
+            {/* INTI */}
+            <div className={`rounded-lg border p-6 transition-colors ${getStyleClass('card')}`}>
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <TrendingUp className={`h-8 w-8 ${getStyleClass('icons.orange')}`} />
+                </div>
+                <div className="ml-4">
+                  <p className={`text-sm font-medium ${getStyleClass('text.secondary')}`}>INTI</p>
+                  <p className={`text-2xl font-semibold ${getStyleClass('text.primary')}`}>
+                    {patentes.filter(p => p.type === 'INTI').length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Título de sección */}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className={`text-lg font-semibold ${getStyleClass('text.primary')}`}>
+              Lista de Patentes y Registros
+            </h3>
+            <span className={`text-sm ${getStyleClass('text.secondary')}`}>
+              {patentes.length} registros
+            </span>
+          </div>
+
+          {/* Lista de Patentes - Cards individuales */}
+          <div className="space-y-4">
+            {patentes.map((patente) => (
+              <div
+                key={patente.id}
+                className={`rounded-lg border p-6 transition-colors ${getStyleClass('card')}`}
+              >
+              <div className="flex items-start justify-between">
+                <div className="flex items-start space-x-4 flex-1">
+                  <div className="flex-shrink-0">
+                    <div className={`p-3 rounded-lg border ${getStyleClass('iconBg.green')}`}>
+                      <Shield className={`h-6 w-6 ${getStyleClass('icons.green')}`} />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className={`text-lg font-semibold mb-1 ${getStyleClass('text.primary')}`}>
+                      {patente.title}
+                    </h4>
+                    <p className={`text-sm mb-2 ${getStyleClass('text.secondary')}`}>
+                      Código: {patente.code}
+                    </p>
+
+                    {/* Información adicional con iconos */}
+                    <div className={`flex items-center gap-6 text-sm ${getStyleClass('text.secondary')}`}>
+                      <div className="flex items-center gap-1">
+                        <Calendar className={`h-4 w-4 ${getStyleClass('icons.gray')}`} />
+                        <span>{patente.year}</span>
                       </div>
                     </div>
-                  )}
+
+                    {/* Badges del tipo */}
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStyleClass('badge.blue')}`}>
+                        {patente.property || "Industrial"}
+                      </span>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStyleClass('badge.gray')}`}>
+                        {patente.organization}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {/* Botón Ver Detalles */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className={`transition-colors ${getStyleClass('button.outline')}`}
+                    onClick={() => handleVerDetalle(patente)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Ver Detalles
+                  </Button>
+
+                  {/* Botón de más opciones con menú */}
+                  <div className="relative">
+                    <button
+                      className={`p-1 rounded transition-colors ${getStyleClass('text.secondary')} hover:${getStyleClass('text.primary')}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMenu(patente.id);
+                      }}
+                    >
+                      <MoreVertical className="h-5 w-5" />
+                    </button>
+
+                    {/* Menú desplegable */}
+                    {menuAbierto === patente.id && (
+                      <div className={`absolute right-0 mt-1 w-48 rounded-md shadow-lg border z-10 transition-colors ${getStyleClass('menu')}`}>
+                        <div className="py-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditar(patente);
+                            }}
+                            className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${getStyleClass('menu.item')}`}
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEliminar(patente);
+                            }}
+                            className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${getStyleClass('menu.item.danger')}`}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
-      {/* Modal de confirmación de eliminación */}
-      <ModalConfirmacionEliminacion
-        isOpen={modalEliminar.isOpen}
-        onClose={() => setModalEliminar({ isOpen: false, patente: null })}
-        onConfirm={confirmEliminar}
-        patente={modalEliminar.patente}
-      />
+        {/* Modal de confirmación de eliminación */}
+        <ModalConfirmacionEliminacion
+          isOpen={modalEliminar.isOpen}
+          onClose={() => setModalEliminar({ isOpen: false, patente: null })}
+          onConfirm={confirmEliminar}
+          patente={modalEliminar.patente}
+        />
 
-      {/* Modal de formulario (nuevo/editar) */}
-      <ModalPatenteForm
-        isOpen={modalForm.isOpen}
-        onClose={() =>
-          setModalForm({ isOpen: false, patente: null, isEditing: false })
-        }
-        patente={modalForm.patente}
-        isEditing={modalForm.isEditing}
-      />
-    </>
+        {/* Modal de formulario (nuevo/editar) */}
+        <ModalPatenteForm
+          isOpen={modalForm.isOpen}
+          onClose={() =>
+            setModalForm({ isOpen: false, patente: null, isEditing: false })
+          }
+          patente={modalForm.patente}
+          isEditing={modalForm.isEditing}
+        />
+    </div>
   );
 }
 
 export default RegistrosPatentes;
+

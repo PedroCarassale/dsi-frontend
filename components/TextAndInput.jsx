@@ -27,12 +27,17 @@ const TextAndInput = ({
   input,
   value = "",
   onChange = () => {},
+  isDarkMode = false,
   ...props
 }) => {
   return (
     <TextAndInputContainer>
       <TextContainer>
-        <Typography variant="tiny" fontWeight="bold">
+        <Typography 
+          variant="tiny" 
+          fontWeight="bold"
+          style={{ color: isDarkMode ? '#f3f4f6' : '#111827' }}
+        >
           {text}
         </Typography>
         {/* {text === "Contraseña" && (
@@ -48,6 +53,14 @@ const TextAndInput = ({
         placeholder={input}
         value={value}
         onChange={onChange}
+        style={{
+          backgroundColor: isDarkMode ? '#374151' : '#ffffff',
+          borderColor: isDarkMode ? '#4b5563' : '#d1d5db',
+          color: isDarkMode ? '#f3f4f6' : '#111827',
+          '::placeholder': {
+            color: isDarkMode ? '#9ca3af' : '#6b7280'
+          }
+        }}
         {...props}
       />
     </TextAndInputContainer>

@@ -1,8 +1,9 @@
-import { ArrowLeft, Plus, Calendar, BookOpen, Shield, X } from "lucide-react";
+import { ArrowLeft, Plus, Calendar, BookOpen, Shield, X, Moon, Sun } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 import { createMemoria, getMemorias } from "../../store/slices/memorias/memoriasActions";
 import { getMemoriasLoading } from "../../store/slices/memorias/memoriasSelector";
 import { getTrabajos as getTrabajosAction } from "../../store/slices/trabajos/trabajosActions";
@@ -13,6 +14,7 @@ import ModalAgregarPatentes from "./ModalAgregarPatentes";
 function NuevaMemoria({ onBack }) {
   const dispatch = useDispatch();
   const loading = useSelector(getMemoriasLoading);
+  const { isDarkMode, getStyleClass } = useThemeStyles();
 
   // Estados para la nueva memoria
   const [name, setName] = useState("");
@@ -75,12 +77,12 @@ function NuevaMemoria({ onBack }) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header con botón volver */}
+    <div className={`max-w-6xl mx-auto min-h-screen transition-colors duration-300 ${getStyleClass('background')}`}>
+      {/* Header con botón volver y toggle dark mode */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-2 rounded-md transition-colors font-medium"
+          className={`flex items-center px-3 py-2 rounded-md transition-colors duration-300 font-medium ${getStyleClass('button.home')}`}
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
           Volver a Memorias
@@ -89,24 +91,24 @@ function NuevaMemoria({ onBack }) {
 
       {/* Título principal */}
       <div className="flex items-center gap-4 mb-8">
-        <div className="bg-blue-100 p-3 rounded-lg border border-blue-200">
-          <Calendar className="h-8 w-8 text-blue-600" />
+        <div className={`p-3 rounded-lg border transition-colors duration-300 ${getStyleClass('iconBg.blue')}`}>
+          <Calendar className={`h-8 w-8 transition-colors duration-300 ${getStyleClass('icons.blue')}`} />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Nueva Memoria</h1>
-          <p className="text-gray-600 mt-1">Crear resumen de actividades del año</p>
+          <h1 className={`text-3xl font-bold transition-colors duration-300 ${getStyleClass('text.primary')}`}>Nueva Memoria</h1>
+          <p className={`mt-1 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>Crear resumen de actividades del año</p>
         </div>
       </div>
 
       {/* Sección del Año y Nombre */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+      <div className={`rounded-lg border p-6 mb-6 transition-colors duration-300 ${getStyleClass('card')}`}>
         <div className="flex items-center gap-2 mb-4">
-          <Calendar className="h-5 w-5 text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Información</h3>
+          <Calendar className={`h-5 w-5 transition-colors duration-300 ${getStyleClass('icons.blue')}`} />
+          <h3 className={`text-lg font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>Información</h3>
         </div>
         <div className="space-y-4">
           <div className="max-w-md">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${getStyleClass('label')}`}>
               Nombre de la memoria
             </label>
             <Input
@@ -115,11 +117,11 @@ function NuevaMemoria({ onBack }) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={`Memoria Anual ${year}`}
-              className="w-full"
+              className={`w-full transition-colors duration-300 ${getStyleClass('input')}`}
             />
           </div>
           <div className="max-w-xs">
-            <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="year" className={`block text-sm font-medium mb-2 transition-colors duration-300 ${getStyleClass('label')}`}>
               Año de la memoria
             </label>
             <Input
@@ -129,27 +131,26 @@ function NuevaMemoria({ onBack }) {
               onChange={(e) => setYear(parseInt(e.target.value))}
               min="2020"
               max="2030"
-              className="w-full"
+              className={`w-full transition-colors duration-300 ${getStyleClass('input')}`}
             />
           </div>
         </div>
       </div>
 
       {/* Sección Trabajos Publicados - Inicialmente vacía */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className={`rounded-lg border mb-6 transition-colors duration-300 ${getStyleClass('card')}`}>
+        <div className={`px-6 py-4 border-b transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-cyan-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Trabajos Publicados</h3>
+              <BookOpen className={`h-5 w-5 transition-colors duration-300 ${getStyleClass('icons.cyan')}`} />
+              <h3 className={`text-lg font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>Trabajos Publicados</h3>
             </div>
             <Button 
-              variant="outline" 
               size="sm"
               onClick={agregarTrabajo}
-              className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              className={`flex items-center gap-2 transition-colors duration-300 ${getStyleClass('button.primary')}`}
             >
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4" />
               Agregar Trabajo
             </Button>
           </div>
@@ -157,31 +158,33 @@ function NuevaMemoria({ onBack }) {
         
         <div className="p-6">
           {trabajosPublicados.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <div className={`text-center py-12 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
+              <BookOpen className={`h-12 w-12 mx-auto mb-4 transition-colors duration-300 ${getStyleClass('icons.gray')}`} />
               <p className="text-lg font-medium mb-2">No hay trabajos publicados</p>
               <p className="text-sm">Haz click en "Agregar Trabajo" para añadir el primer trabajo.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {trabajosPublicados.map((trabajo) => (
-                <div key={trabajo.id} className="border border-gray-200 rounded-lg p-4">
+                <div key={trabajo.id} className={`border rounded-lg p-4 transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{trabajo.title}</h4>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h4 className={`font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>{trabajo.title}</h4>
+                      <p className={`text-sm mt-1 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                         {trabajo.authors?.join(", ") || "Sin autores"}
                       </p>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                        <span className={`px-2 py-1 rounded text-xs transition-colors duration-300 ${
+                          isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+                        }`}>
                           {trabajo.type === 'article' ? 'Artículo' : trabajo.type === 'book' ? 'Libro' : trabajo.type === 'book_chapter' ? 'Capítulo' : trabajo.type}
                         </span>
-                        <span className="text-sm text-gray-500">{trabajo.journal}</span>
+                        <span className={`text-sm transition-colors duration-300 ${getStyleClass('text.secondary')}`}>{trabajo.journal}</span>
                       </div>
                     </div>
                     <button
                       onClick={() => eliminarTrabajo(trabajo.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded"
+                      className={`p-1 rounded transition-colors duration-300 ${getStyleClass('button.remove')}`}
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -194,20 +197,19 @@ function NuevaMemoria({ onBack }) {
       </div>
 
       {/* Sección Registros y Patentes - Inicialmente vacía */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-8">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className={`rounded-lg border mb-8 transition-colors duration-300 ${getStyleClass('card')}`}>
+        <div className={`px-6 py-4 border-b transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-green-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Registros y Patentes</h3>
+              <Shield className={`h-5 w-5 transition-colors duration-300 ${getStyleClass('icons.green')}`} />
+              <h3 className={`text-lg font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>Registros y Patentes</h3>
             </div>
             <Button 
-              variant="outline" 
               size="sm"
               onClick={agregarPatente}
-              className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              className={`flex items-center gap-2 transition-colors duration-300 ${getStyleClass('button.primary')}`}
             >
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4" />
               Agregar Patente
             </Button>
           </div>
@@ -215,25 +217,25 @@ function NuevaMemoria({ onBack }) {
         
         <div className="p-6">
           {registrosPatentes.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <Shield className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <div className={`text-center py-12 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
+              <Shield className={`h-12 w-12 mx-auto mb-4 transition-colors duration-300 ${getStyleClass('icons.gray')}`} />
               <p className="text-lg font-medium mb-2">No hay patentes registradas</p>
               <p className="text-sm">Haz click en "Agregar Patente" para añadir la primera patente.</p>
             </div>
           ) : (
             <div className="space-y-4">
               {registrosPatentes.map((patente) => (
-                <div key={patente.id} className="border border-gray-200 rounded-lg p-4">
+                <div key={patente.id} className={`border rounded-lg p-4 transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{patente.title}</h4>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <h4 className={`font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>{patente.title}</h4>
+                      <p className={`text-sm mt-1 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                         {patente.code} • {patente.organization || patente.type}
                       </p>
                     </div>
                     <button
                       onClick={() => eliminarPatente(patente.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded"
+                      className={`p-1 rounded transition-colors duration-300 ${getStyleClass('button.remove')}`}
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -250,7 +252,7 @@ function NuevaMemoria({ onBack }) {
         <Button 
           onClick={guardarCambios}
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-medium"
+          className={`w-full py-3 text-lg font-medium transition-colors duration-300 ${getStyleClass('button.primary')}`}
         >
           {loading ? "Guardando..." : "Guardar Cambios"}
         </Button>
@@ -275,3 +277,5 @@ function NuevaMemoria({ onBack }) {
 }
 
 export default NuevaMemoria;
+
+

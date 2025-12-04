@@ -7,7 +7,28 @@ import {
 } from "./patentesActions";
 
 const initialState = {
-  patentes: [],
+  patentes: [
+    {
+      id: 1,
+      title: "Sistema de Gestión Inteligente",
+      code: "P2024-001",
+      year: 2024,
+      type: "Industrial", 
+      property: "Industrial",
+      organization: "INTI",
+      description: "Sistema avanzado de gestión para procesos industriales"
+    },
+    {
+      id: 2,
+      title: "Algoritmo de Optimización Neural", 
+      code: "P2025-001",
+      year: 2025,
+      type: "INTI",
+      property: "INTI", 
+      organization: "Universidad",
+      description: "Algoritmo basado en redes neuronales para optimización de procesos"
+    }
+  ],
   loading: false,
   error: null,
 };

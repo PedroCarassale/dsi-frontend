@@ -3,6 +3,7 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 import {
   createTrabajo,
   updateTrabajo,
@@ -18,6 +19,7 @@ function ModalPublicacionForm({
 }) {
   const dispatch = useDispatch();
   const loading = useSelector(getTrabajosLoading);
+  const { isDarkMode, getStyleClass } = useThemeStyles();
 
   const [formData, setFormData] = useState({
     title: publicacion?.title || "",
@@ -96,18 +98,18 @@ function ModalPublicacionForm({
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+      <div className={`rounded-lg max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto shadow-2xl transition-colors ${getStyleClass('card')}`}>
         {/* Header del modal */}
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className={`px-6 py-4 border-b transition-colors ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-gray-900">
+            <h3 className={`text-xl font-semibold transition-colors ${getStyleClass('text.primary')}`}>
               {isEditing
                 ? "Editar Trabajo Publicado"
                 : "Nuevo Trabajo Publicado"}
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className={`transition-colors ${getStyleClass('button.menuEdit')}`}
             >
               <X className="h-5 w-5" />
             </button>
@@ -119,7 +121,7 @@ function ModalPublicacionForm({
           <div className="space-y-6">
             {/* Título */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Título <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -127,14 +129,14 @@ function ModalPublicacionForm({
                 onChange={(e) => handleInputChange("title", e.target.value)}
                 placeholder="Título de la publicación"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y transition-colors ${getStyleClass('input')}`}
                 rows={3}
               />
             </div>
 
             {/* Autores */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Autores <span className="text-red-500">*</span>
               </label>
               <Input
@@ -150,13 +152,13 @@ function ModalPublicacionForm({
             {/* Tipo e ISSN */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                   Tipo <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.type}
                   onChange={(e) => handleInputChange("type", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${getStyleClass('input')}`}
                   required
                 >
                   <option value="article">Artículo</option>
@@ -165,7 +167,7 @@ function ModalPublicacionForm({
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                   ISSN <span className="text-red-500">*</span>
                 </label>
                 <Input
@@ -180,7 +182,7 @@ function ModalPublicacionForm({
 
             {/* Revista/Conferencia */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Revista/Conferencia
               </label>
               <Input
@@ -192,7 +194,7 @@ function ModalPublicacionForm({
 
             {/* Año */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Año <span className="text-red-500">*</span>
               </label>
               <Input
@@ -209,13 +211,13 @@ function ModalPublicacionForm({
           </div>
 
           {/* Botones */}
-          <div className="flex gap-3 justify-end pt-6 mt-6 border-t border-gray-200">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className={`flex gap-3 justify-end pt-6 mt-6 border-t transition-colors ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <Button type="button" variant="outline" onClick={onClose} className={`transition-colors ${getStyleClass('button.outline')}`}>
               Cancelar
             </Button>
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700"
+              className={`transition-colors ${getStyleClass('button.primary')}`}
               disabled={loading}
             >
               {loading
@@ -232,3 +234,4 @@ function ModalPublicacionForm({
 }
 
 export default ModalPublicacionForm;
+

@@ -160,3 +160,4 @@ function DetallePatente({ patente, onBack, onUpdateSelected }) {
 }
 
 export default DetallePatente;
+

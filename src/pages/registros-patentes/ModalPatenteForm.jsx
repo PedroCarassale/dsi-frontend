@@ -3,6 +3,7 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 import {
   createPatente,
   updatePatente,
@@ -13,6 +14,7 @@ import { getPatentesLoading } from "../../store/slices/patentes/petentesSelector
 function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
   const dispatch = useDispatch();
   const loading = useSelector(getPatentesLoading);
+  const { isDarkMode, getStyleClass } = useThemeStyles();
 
   const [formData, setFormData] = useState({
     title: patente?.title || "",
@@ -77,16 +79,16 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+      <div className={`rounded-lg max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto shadow-2xl transition-colors ${getStyleClass('card')}`}>
         {/* Header del modal */}
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className={`px-6 py-4 border-b transition-colors ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-gray-900">
+            <h3 className={`text-xl font-semibold transition-colors ${getStyleClass('text.primary')}`}>
               {isEditing ? "Editar Registro/Patente" : "Nuevo Registro/Patente"}
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className={`transition-colors ${getStyleClass('button.menuEdit')}`}
             >
               <X className="h-5 w-5" />
             </button>
@@ -98,7 +100,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
           <div className="space-y-6">
             {/* Año */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Año <span className="text-red-500">*</span>
               </label>
               <Input
@@ -111,13 +113,12 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
                 max="2100"
                 placeholder="Año de la patente o registro"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {/* Título */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Título <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -125,14 +126,14 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
                 onChange={(e) => handleInputChange("title", e.target.value)}
                 placeholder="Título de la patente o registro"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px] resize-y transition-colors ${getStyleClass('input')}`}
                 rows={3}
               />
             </div>
 
             {/* Código */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Código <span className="text-red-500">*</span>
               </label>
               <Input
@@ -147,7 +148,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
 
             {/* Descripción */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Descripción <span className="text-red-500">*</span>
               </label>
               <textarea
@@ -156,20 +157,20 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
                   handleInputChange("description", e.target.value)
                 }
                 placeholder="Descripción sobre la patente"
-                className="w-full min-h-32 px-3 py-2 border border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+                className={`w-full min-h-32 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical transition-colors ${getStyleClass('input')}`}
                 required
               />
             </div>
 
             {/* Tipo de Propiedad */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Tipo de Propiedad <span className="text-red-500">*</span>
               </label>
               <select
                 value={formData.property}
                 onChange={(e) => handleInputChange("property", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${getStyleClass('input')}`}
                 required
               >
                 <option value="Industrial">Industrial</option>
@@ -179,7 +180,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
 
             {/* Organismo Competente */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className={`block text-sm font-medium mb-2 transition-colors ${getStyleClass('text.secondary')}`}>
                 Organismo Competente <span className="text-red-500">*</span>
               </label>
               <select
@@ -187,7 +188,7 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
                 onChange={(e) =>
                   handleInputChange("organization", e.target.value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${getStyleClass('input')}`}
                 required
               >
                 <option value="">
@@ -207,13 +208,13 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
               type="button"
               variant="outline"
               onClick={onClose}
-              className="px-6"
+              className={`px-6 transition-colors ${getStyleClass('button.outline')}`}
             >
               Cancelar
             </Button>
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+              className={`px-6 transition-colors ${getStyleClass('button.primary')}`}
               disabled={loading}
             >
               {loading
@@ -230,3 +231,4 @@ function ModalPatenteForm({ isOpen, onClose, patente, isEditing = false }) {
 }
 
 export default ModalPatenteForm;
+

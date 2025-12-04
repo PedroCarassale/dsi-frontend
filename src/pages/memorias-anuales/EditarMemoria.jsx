@@ -1,8 +1,9 @@
-import { ArrowLeft, Plus, X, Calendar, BookOpen, Shield } from "lucide-react";
+import { ArrowLeft, Plus, X, Calendar, BookOpen, Shield, Moon, Sun } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useThemeStyles } from "../../hooks/useThemeStyles";
 import {
   updateMemoria,
   getMemorias,
@@ -16,6 +17,7 @@ import ModalAgregarPatentes from "./ModalAgregarPatentes";
 function EditarMemoria({ memoria, onBack }) {
   const dispatch = useDispatch();
   const loading = useSelector(getMemoriasLoading);
+  const { isDarkMode, getStyleClass } = useThemeStyles();
 
   // Estados para manejar las listas editables
   const [name, setName] = useState(memoria?.name || "");
@@ -93,12 +95,12 @@ function EditarMemoria({ memoria, onBack }) {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header con botón volver */}
+    <div className={`max-w-6xl mx-auto min-h-screen transition-colors duration-300 ${getStyleClass('background')}`}>
+      {/* Header con botón volver y toggle dark mode */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={onBack}
-          className="flex items-center text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-2 rounded-md transition-colors font-medium"
+          className={`flex items-center px-3 py-2 rounded-md transition-colors duration-300 font-medium ${getStyleClass('button.home')}`}
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
           Volver a Memorias
@@ -108,26 +110,26 @@ function EditarMemoria({ memoria, onBack }) {
       {/* Título principal */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4 flex-1">
-          <div className="bg-blue-100 p-3 rounded-lg border border-blue-200">
-            <Calendar className="h-8 w-8 text-blue-600" />
+          <div className={`p-3 rounded-lg border transition-colors duration-300 ${getStyleClass('iconBg.blue')}`}>
+            <Calendar className={`h-8 w-8 transition-colors duration-300 ${getStyleClass('icons.blue')}`} />
           </div>
           <div className="flex-1">
             <Input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="text-3xl font-bold text-gray-900 border-0 px-0 focus:ring-0"
+              className={`text-3xl font-bold border-0 px-0 focus:ring-0 transition-colors duration-300 ${getStyleClass('text.primary')} ${getStyleClass('background')}`}
               placeholder="Nombre de la memoria"
             />
-            <p className="text-gray-600 mt-1">Resumen de actividades del año</p>
+            <p className={`mt-1 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>Resumen de actividades del año</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <span
-            className={`px-3 py-1 text-sm font-medium rounded ${
+            className={`px-3 py-1 text-sm font-medium rounded transition-colors duration-300 ${
               memoria.status === "En Progreso"
-                ? "bg-orange-500 text-white"
-                : "bg-blue-500 text-white"
+                ? getStyleClass('badge.orange')
+                : getStyleClass('badge.blue')
             }`}
           >
             {memoria.status}
@@ -137,44 +139,44 @@ function EditarMemoria({ memoria, onBack }) {
 
       {/* Cards de información - solo lectura en edición */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-colors duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Calendar className="h-8 w-8 text-blue-600" />
+              <Calendar className={`h-8 w-8 transition-colors duration-300 ${getStyleClass('icons.blue')}`} />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Año</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className={`text-sm font-medium transition-colors duration-300 ${getStyleClass('text.secondary')}`}>Año</p>
+              <p className={`text-2xl font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                 {memoria.year}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-colors duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <BookOpen className="h-8 w-8 text-cyan-600" />
+              <BookOpen className={`h-8 w-8 transition-colors duration-300 ${getStyleClass('icons.cyan')}`} />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">
+              <p className={`text-sm font-medium transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                 Trabajos Publicados
               </p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className={`text-2xl font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                 {trabajosPublicados.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className={`rounded-lg border p-6 transition-colors duration-300 ${getStyleClass('card')}`}>
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <Shield className="h-8 w-8 text-green-600" />
+              <Shield className={`h-8 w-8 transition-colors duration-300 ${getStyleClass('icons.green')}`} />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Patentes</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className={`text-sm font-medium transition-colors duration-300 ${getStyleClass('text.secondary')}`}>Patentes</p>
+              <p className={`text-2xl font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                 {registrosPatentes.length}
               </p>
             </div>
@@ -183,22 +185,21 @@ function EditarMemoria({ memoria, onBack }) {
       </div>
 
       {/* Sección Trabajos Publicados - Editable */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className={`rounded-lg border mb-6 transition-colors duration-300 ${getStyleClass('card')}`}>
+        <div className={`px-6 py-4 border-b transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-cyan-600" />
-              <h3 className="text-lg font-semibold text-gray-900">
+              <BookOpen className={`h-5 w-5 transition-colors duration-300 ${getStyleClass('icons.cyan')}`} />
+              <h3 className={`text-lg font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                 Trabajos Publicados
               </h3>
             </div>
             <Button
-              variant="outline"
               size="sm"
               onClick={agregarTrabajo}
-              className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              className={`flex items-center gap-2 transition-colors duration-300 ${getStyleClass('button.primary')}`}
             >
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4" />
               Agregar Trabajo
             </Button>
           </div>
@@ -209,28 +210,30 @@ function EditarMemoria({ memoria, onBack }) {
             {trabajosPublicados.map((trabajo) => (
               <div
                 key={trabajo.id}
-                className="border border-gray-200 rounded-lg p-4"
+                className={`border rounded-lg p-4 transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">
+                    <h4 className={`font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                       {trabajo.title}
                     </h4>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className={`text-sm mt-1 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                       {trabajo.authors}
                     </p>
                     <div className="flex items-center gap-4 mt-2">
-                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                      <span className={`px-2 py-1 rounded text-xs transition-colors duration-300 ${
+                        isDarkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-700'
+                      }`}>
                         {trabajo.type}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      <span className={`text-sm transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                         {trabajo.journal}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => eliminarTrabajo(trabajo.id)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded"
+                    className={`p-1 rounded transition-colors duration-300 ${getStyleClass('button.remove')}`}
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -238,7 +241,7 @@ function EditarMemoria({ memoria, onBack }) {
               </div>
             ))}
             {trabajosPublicados.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className={`text-center py-8 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                 No hay trabajos publicados. Haz click en "Agregar Trabajo" para
                 añadir uno.
               </div>
@@ -248,22 +251,21 @@ function EditarMemoria({ memoria, onBack }) {
       </div>
 
       {/* Sección Registros y Patentes - Editable */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-8">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className={`rounded-lg border mb-8 transition-colors duration-300 ${getStyleClass('card')}`}>
+        <div className={`px-6 py-4 border-b transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-green-600" />
-              <h3 className="text-lg font-semibold text-gray-900">
+              <Shield className={`h-5 w-5 transition-colors duration-300 ${getStyleClass('icons.green')}`} />
+              <h3 className={`text-lg font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                 Registros y Patentes
               </h3>
             </div>
             <Button
-              variant="outline"
               size="sm"
               onClick={agregarPatente}
-              className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              className={`flex items-center gap-2 transition-colors duration-300 ${getStyleClass('button.primary')}`}
             >
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="h-4 w-4" />
               Agregar Patente
             </Button>
           </div>
@@ -274,20 +276,20 @@ function EditarMemoria({ memoria, onBack }) {
             {registrosPatentes.map((registro) => (
               <div
                 key={registro.id}
-                className="border border-gray-200 rounded-lg p-4"
+                className={`border rounded-lg p-4 transition-colors duration-300 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">
+                    <h4 className={`font-semibold transition-colors duration-300 ${getStyleClass('text.primary')}`}>
                       {registro.title}
                     </h4>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className={`text-sm mt-1 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                       {registro.code} • {registro.type}
                     </p>
                   </div>
                   <button
                     onClick={() => eliminarPatente(registro.id)}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1 rounded"
+                    className={`p-1 rounded transition-colors duration-300 ${getStyleClass('button.remove')}`}
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -295,7 +297,7 @@ function EditarMemoria({ memoria, onBack }) {
               </div>
             ))}
             {registrosPatentes.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className={`text-center py-8 transition-colors duration-300 ${getStyleClass('text.secondary')}`}>
                 No hay patentes registradas. Haz click en "Agregar Patente" para
                 añadir una.
               </div>
@@ -309,7 +311,7 @@ function EditarMemoria({ memoria, onBack }) {
         <Button
           onClick={guardarCambios}
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-medium"
+          className={`w-full py-3 text-lg font-medium transition-colors duration-300 ${getStyleClass('button.primary')}`}
         >
           {loading ? "Guardando..." : "Guardar Cambios"}
         </Button>
@@ -334,3 +336,6 @@ function EditarMemoria({ memoria, onBack }) {
 }
 
 export default EditarMemoria;
+
+
+

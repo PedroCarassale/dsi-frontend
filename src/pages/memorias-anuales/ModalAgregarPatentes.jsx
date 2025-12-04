@@ -182,3 +182,6 @@ function ModalAgregarPatentes({ isOpen, onClose, onAdd, patentesYaAgregadas = []
 
 export default ModalAgregarPatentes;
 
+
+
+
