@@ -220,7 +220,7 @@ function RegistrosPatentes() {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500">Este Año</p>
               <p className="text-2xl font-semibold text-gray-900">{esteAño}</p>
-              <p className="text-sm text-gray-500 mt-1">2025</p>
+              <p className="text-sm text-gray-500 mt-1">2026</p>
             </div>
           </div>
         </div>

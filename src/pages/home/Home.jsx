@@ -58,7 +58,7 @@ function Home() {
             <p className="text-sm font-medium text-gray-500 mb-1">
               Memoria Anual
             </p>
-            <p className="text-3xl font-bold text-gray-900 mb-1">2025</p>
+            <p className="text-3xl font-bold text-gray-900 mb-1">2026</p>
             <p className="text-sm text-gray-500">En Progreso</p>
           </div>
         </div>
@@ -77,14 +77,6 @@ function Home() {
             <p className="text-3xl font-bold text-gray-900 mb-1">
               {publicaciones.length}
             </p>
-            <p className="text-sm text-gray-500">
-              +
-              {
-                publicaciones.filter((p) => p.year === new Date().getFullYear())
-                  .length
-              }{" "}
-              este año
-            </p>
           </div>
         </div>
 
@@ -99,14 +91,6 @@ function Home() {
             <p className="text-sm font-medium text-gray-500 mb-1">Patentes</p>
             <p className="text-3xl font-bold text-gray-900 mb-1">
               {patentes.length}
-            </p>
-            <p className="text-sm text-gray-500">
-              +
-              {
-                patentes.filter((p) => p.year === new Date().getFullYear())
-                  .length
-              }{" "}
-              este año
             </p>
           </div>
         </div>
