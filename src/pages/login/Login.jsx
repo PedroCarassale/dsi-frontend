@@ -12,32 +12,50 @@ const MainContainer = styled.div`
   width: 100vw;
 `;
 
+const FormAndLogoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 48px;
+`;
+
 const FormAndLogoContainer = styled(Row)`
-  width: 750px;
-  height: 380px;
+  width: 480px;
+  height: 420px;
   background-color: #fff;
-  border-radius: 15px;
+  border-radius: 22px;
+  border: 1px solid #222;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const LogoContainer = styled.div`
-  width: 40%;
-  height: 100%;
+  width: 260px;
+  height: 260px;
   background-color: #fff;
+  border-radius: 22px;
+  box-shadow: 0 0 0 1px #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Login = () => {
   return (
     <MainContainer>
-      <FormAndLogoContainer>
-        <LoginForm />
+      <FormAndLogoWrapper>
+        <FormAndLogoContainer>
+          <LoginForm />
+        </FormAndLogoContainer>
         <LogoContainer>
           <img
             src={UTNLogo}
             alt="UTN Logo"
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            style={{ width: "80%", height: "80%", objectFit: "contain" }}
           />
         </LogoContainer>
-      </FormAndLogoContainer>
+      </FormAndLogoWrapper>
     </MainContainer>
   );
 };

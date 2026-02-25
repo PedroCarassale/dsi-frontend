@@ -8,26 +8,48 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/slices/auth/authSlice";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../../context/NotificationContext";
 
 function Home() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [showConfirm, setShowConfirm] = useState(false);
   const { notifications } = useNotifications();
 
   // Filtrar las últimas 4 actividades para mostrar
   const recentActivities = notifications.slice(0, 4);
 
+  const handleLogout = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmLogout = () => {
+    dispatch(logout());
+    setShowConfirm(false);
+    navigate("/login");
+  };
+
+  const cancelLogout = () => {
+    setShowConfirm(false);
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Bienvenido al Sistema DSI
-        </h1>
-        <p className="text-gray-600">
-          Sistema de gestión para el Departamento de Sistemas de Información
-        </p>
+      <div className="mb-8 relative">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Bienvenido al Sistema DSI
+          </h1>
+          <p className="text-gray-600">
+            Sistema de gestión para el Departamento de Sistemas de Información
+          </p>
+        </div>
+        {/* Botón de cerrar sesión eliminado, ahora está en el header */}
       </div>
 
       {/* Estadísticas principales */}

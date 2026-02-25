@@ -1,5 +1,6 @@
 import { Bell, Home, ChevronDown, BookOpen, Shield, FileText, X } from "lucide-react";
 import { Button } from "./ui/button";
+import LogoutButton from "./LogoutButton";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useNotifications } from "../src/context/NotificationContext";
@@ -152,6 +153,7 @@ function Header() {
                 Grupo 11
                 <ChevronDown className="h-4 w-4 ml-1" />
               </Button>
+              <LogoutButton />
             </div>
           </div>
         </div>

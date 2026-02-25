@@ -26,12 +26,50 @@ const TitlesContainer = styled(Column)`
   gap: 10px;
 `;
 
+// Popup reutilizable (igual que en LoginForm)
+const PopupOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+`;
+
+const PopupBox = styled.div`
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  padding: 32px 24px 20px 24px;
+  min-width: 280px;
+  max-width: 90vw;
+  text-align: center;
+  border: 1px solid #e11d48;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const PopupButton = styled.button`
+  margin-top: 18px;
+  background: #e11d48;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+`;
+
 const ForgotPasswordForm = ({ onBack }) => {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [code, setCode] = useState("");
   const [codeChecked, setCodeChecked] = useState(false);
   const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleSendCode = () => {
     // Aquí iría la lógica para enviar el código al email
@@ -46,6 +84,7 @@ const ForgotPasswordForm = ({ onBack }) => {
       // Aquí podrías continuar con el flujo de cambio de contraseña
     } else {
       setError("El código debe ser de 5 números");
+      setShowPopup(true);
     }
   };
 
@@ -61,16 +100,20 @@ const ForgotPasswordForm = ({ onBack }) => {
           </Typography>
         </TitlesContainer>
         <Column style={{ width: "100%", gap: 16, alignItems: "stretch" }}>
-          <TextAndInput
-            text="Email"
-            input=""
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={sent}
-          />
-          <Button variant="default" onClick={handleSendCode} disabled={sent || !email}>
-            {sent ? "Código enviado" : "Enviar código"}
-          </Button>
+          {!sent && (
+            <>
+              <TextAndInput
+                text="Email"
+                input=""
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={sent}
+              />
+              <Button variant="default" onClick={handleSendCode} disabled={sent || !email}>
+                {sent ? "Código enviado" : "Enviar código"}
+              </Button>
+            </>
+          )}
           {sent && (
             <>
               <TextAndInput
@@ -93,10 +136,26 @@ const ForgotPasswordForm = ({ onBack }) => {
                   Volver al login
                 </Button>
               </Column>
-              {error && (
-                <Typography variant="small" style={{ color: "red" }}>
-                  {error}
-                </Typography>
+              {/* Popup de advertencia para error de código */}
+              {showPopup && (
+                <PopupOverlay>
+                  <PopupBox>
+                    <Typography
+                      variant="medium"
+                      style={{
+                        color: "#e11d48",
+                        marginBottom: 8,
+                        textAlign: "center",
+                        width: "100%",
+                      }}
+                    >
+                      {error}
+                    </Typography>
+                    <PopupButton onClick={() => setShowPopup(false)}>
+                      Cerrar
+                    </PopupButton>
+                  </PopupBox>
+                </PopupOverlay>
               )}
             </>
           )}
