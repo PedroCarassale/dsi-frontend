@@ -107,7 +107,7 @@ function NuevaMemoria({ onBack }) {
         <div className="space-y-4">
           <div className="max-w-md">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Nombre de la memoria
+              Nombre de la memoria <span className="text-red-500">*</span>
             </label>
             <Input
               id="name"
@@ -116,11 +116,12 @@ function NuevaMemoria({ onBack }) {
               onChange={(e) => setName(e.target.value)}
               placeholder={`Memoria Anual ${year}`}
               className="w-full"
+              required
             />
           </div>
           <div className="max-w-xs">
             <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-2">
-              Año de la memoria
+              Año de la memoria <span className="text-red-500">*</span>
             </label>
             <Input
               id="year"
@@ -130,6 +131,7 @@ function NuevaMemoria({ onBack }) {
               min="2020"
               max="2030"
               className="w-full"
+              required
             />
           </div>
         </div>

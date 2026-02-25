@@ -4,12 +4,9 @@ import {
   Shield,
   TrendingUp,
   ArrowRight,
-  Calendar,
-  Users,
 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useNotifications } from "../../context/NotificationContext";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTrabajos } from "../../store/slices/trabajos/trabajosActions";
@@ -19,7 +16,6 @@ import { getPatentes as getPatentesSelector } from "../../store/slices/patentes/
 
 function Home() {
   const navigate = useNavigate();
-  const { notifications } = useNotifications();
   const dispatch = useDispatch();
 
   const publicaciones = useSelector(getTrabajosSelector);
@@ -36,9 +32,6 @@ function Home() {
   const passed = Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1;
   const total = Math.floor((end - start) / (1000 * 60 * 60 * 24));
   const percent = ((passed / total) * 100).toFixed(1);
-
-  // Filtrar las últimas 4 actividades para mostrar
-  const recentActivities = notifications.slice(0, 4);
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -223,77 +216,6 @@ function Home() {
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
-        </div>
-      </div>
-
-      {/* Actividad Reciente */}
-      <div>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
-          Actividad Reciente
-        </h2>
-        <div className="space-y-4">
-          {recentActivities.map((activity) => {
-            const getActivityIcon = () => {
-              switch (activity.type) {
-                case "publicacion":
-                  return <BookOpen className="h-6 w-6 text-cyan-600" />;
-                case "patente":
-                  return <Shield className="h-6 w-6 text-green-600" />;
-                case "memoria":
-                  return <FileText className="h-6 w-6 text-blue-600" />;
-                default:
-                  return <FileText className="h-6 w-6 text-gray-600" />;
-              }
-            };
-
-            const getActivityBgColor = () => {
-              switch (activity.type) {
-                case "publicacion":
-                  return "bg-cyan-100 border-cyan-200";
-                case "patente":
-                  return "bg-green-100 border-green-200";
-                case "memoria":
-                  return "bg-blue-100 border-blue-200";
-                default:
-                  return "bg-gray-100 border-gray-200";
-              }
-            };
-
-            return (
-              <div
-                key={activity.id}
-                className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => navigate(activity.link)}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-4 flex-1">
-                    <div className="flex-shrink-0">
-                      <div
-                        className={`p-3 rounded-lg border ${getActivityBgColor()}`}
-                      >
-                        {getActivityIcon()}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                        {activity.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {activity.message}
-                      </p>
-
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-1" />
-                          <span>{activity.time}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
     </div>

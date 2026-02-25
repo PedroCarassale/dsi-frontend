@@ -22,18 +22,21 @@ function ModalConfirmacionEliminacion({
         {/* Contenido del modal */}
         <div className="px-6 py-6">
           <div className="flex flex-col items-center">
-            {/* Icono de peligro */}
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
+            {/* Icono de peligro - Amarillo */}
+            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle className="w-8 h-8 text-yellow-600" />
             </div>
-            <p className="text-gray-700 text-center text-lg">
-              ¿Seguro desea eliminar este trabajo publicado?
+            <p className="text-gray-700 text-center text-lg font-semibold">
+              ¿Está seguro de eliminar este trabajo publicado?
             </p>
             {publicacion && (
               <p className="text-gray-500 text-center text-sm mt-2">
                 "{publicacion.title}"
               </p>
             )}
+            <p className="text-gray-500 text-center text-xs mt-3">
+              Esta acción no se puede deshacer.
+            </p>
           </div>
         </div>
 
@@ -44,8 +47,11 @@ function ModalConfirmacionEliminacion({
           </Button>
           <Button
             type="button"
-            onClick={() => onConfirm(publicacion)}
-            className="bg-red-600 hover:bg-red-700 text-white"
+            onClick={() => {
+              onConfirm(publicacion);
+              onClose();
+            }}
+            className="bg-yellow-600 hover:bg-yellow-700 text-white"
           >
             Eliminar
           </Button>

@@ -44,6 +44,7 @@ function MemoriasAnuales() {
   const [selectedMemoria, setSelectedMemoria] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Función para manejar ver detalle
   const handleVerDetalle = (memoria) => {
@@ -123,6 +124,15 @@ function MemoriasAnuales() {
   const total = Math.floor((end - start) / (1000 * 60 * 60 * 24));
   const tasaFinalizacion = ((passed / total) * 100).toFixed(1);
 
+  // Filtrar memorias por búsqueda
+  const memoriasFiltradasPorBusqueda = memorias.filter((memoria) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      memoria.name?.toLowerCase().includes(searchLower) ||
+      memoria.year?.toString().includes(searchLower)
+    );
+  });
+
   return (
     <>
       {/* Sección de título con breadcrumb */}
@@ -146,12 +156,14 @@ function MemoriasAnuales() {
 
         {/* Barra de búsqueda y botón Nueva Memoria */}
         <div className="flex items-center gap-4 mt-6">
-          <div className="relative w-80">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               type="text"
-              placeholder="Buscar por año..."
+              placeholder="Buscar por nombre o año..."
               className="pl-10 bg-white border-gray-300"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -235,13 +247,22 @@ function MemoriasAnuales() {
       {/* Título de sección */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
-          Memorias Anuales
+          Memorias Anuales {searchTerm && `- ${memoriasFiltradasPorBusqueda.length} resultados`}
         </h3>
       </div>
 
       {/* Lista de Memorias Anuales - Cards individuales */}
-      <div className="space-y-4">
-        {memorias.map((memoria) => (
+      {memoriasFiltradasPorBusqueda.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">
+          <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-lg font-medium mb-2">No hay memorias que coincidan</p>
+          <p className="text-sm">
+            {searchTerm ? "Intenta con otros términos de búsqueda" : "Crea una nueva memoria para comenzar"}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {memoriasFiltradasPorBusqueda.map((memoria) => (
           <div
             key={memoria.id}
             className="bg-white rounded-lg border border-gray-200 p-6"
@@ -322,8 +343,9 @@ function MemoriasAnuales() {
               </Button>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </>
   );
 }

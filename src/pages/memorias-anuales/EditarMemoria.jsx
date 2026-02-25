@@ -1,4 +1,4 @@
-import { ArrowLeft, Plus, X, Calendar, BookOpen, Shield } from "lucide-react";
+import { ArrowLeft, Plus, X, Calendar, BookOpen, Shield, Users } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { useState, useEffect } from "react";
@@ -112,12 +112,16 @@ function EditarMemoria({ memoria, onBack }) {
             <Calendar className="h-8 w-8 text-blue-600" />
           </div>
           <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Nombre <span className="text-red-500">*</span>
+            </label>
             <Input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="text-3xl font-bold text-gray-900 border-0 px-0 focus:ring-0"
               placeholder="Nombre de la memoria"
+              required
             />
             <p className="text-gray-600 mt-1">Resumen de actividades del año</p>
           </div>
@@ -150,6 +154,23 @@ function EditarMemoria({ memoria, onBack }) {
             </div>
           </div>
         </div>
+
+        {/* Grupo - Si existe */}
+        {memoria.group && (
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Grupo</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {memoria.group.name || memoria.group}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="bg-white rounded-lg border border-gray-200 p-6">
           <div className="flex items-center">

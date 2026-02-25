@@ -54,6 +54,7 @@ function TrabajosPublicados() {
     publicacion: null,
     isEditing: false,
   });
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleVerDetalle = (publicacion) => {
     setPublicacionSeleccionada(publicacion);
@@ -90,6 +91,16 @@ function TrabajosPublicados() {
     // El manejo de crear/actualizar ahora se hace en el modal
     // que hace el dispatch directamente
   };
+
+  // Filtrar publicaciones por búsqueda
+  const publicacionesFiltradas = publicaciones.filter((pub) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      pub.title?.toLowerCase().includes(searchLower) ||
+      pub.authors?.some((author) => author.toLowerCase().includes(searchLower)) ||
+      pub.year?.toString().includes(searchLower)
+    );
+  });
 
   // Cerrar menú al hacer click fuera
   useEffect(() => {
@@ -160,8 +171,10 @@ function TrabajosPublicados() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar Trabajos Publicados..."
+              placeholder="Buscar por título, autor o año..."
               className="pl-10 bg-white border-gray-200"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -232,13 +245,22 @@ function TrabajosPublicados() {
           Lista de Trabajos Publicados y Artículos
         </h3>
         <span className="text-sm text-gray-500">
-          {publicaciones.length} publicaciones
+          {publicacionesFiltradas.length} de {publicaciones.length} publicaciones
         </span>
       </div>
 
-      {/* Lista de publicaciones */}
-      <div className="space-y-4">
-        {publicaciones.map((pub) => (
+      {/* Lista de Publicaciones */}
+      {publicacionesFiltradas.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">
+          <BookOpen className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-lg font-medium mb-2">No hay trabajos publicados que coincidan</p>
+          <p className="text-sm">
+            {searchTerm ? "Intenta con otros términos de búsqueda" : "Crea un nuevo trabajo para comenzar"}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {publicacionesFiltradas.map((pub) => (
           <div
             key={pub.id}
             className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow"
@@ -328,8 +350,9 @@ function TrabajosPublicados() {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal de confirmación de eliminación */}
       <ModalConfirmacionEliminacion

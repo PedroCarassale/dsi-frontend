@@ -7,6 +7,7 @@ import {
   Shield,
   BookOpen,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { useState } from "react";
@@ -168,6 +169,23 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
             </div>
           </div>
         </div>
+
+        {/* Grupo - Si existe */}
+        {memoria.group && (
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Grupo</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {memoria.group.name || memoria.group}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Publicaciones */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
@@ -366,13 +384,19 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              ¿Eliminar memoria?
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Esta acción no se puede deshacer. Se eliminará la memoria
-              permanentemente.
-            </p>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-6 h-6 text-yellow-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  ¿Está seguro de eliminar esta memoria?
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Esta acción no se puede deshacer. Se eliminará la memoria permanentemente.
+                </p>
+              </div>
+            </div>
             <div className="flex gap-3 justify-end">
               <Button
                 variant="outline"
@@ -381,7 +405,7 @@ function DetalleMemoria({ memoria, onBack, onEdit }) {
                 Cancelar
               </Button>
               <Button
-                className="bg-red-600 hover:bg-red-700"
+                className="bg-yellow-600 hover:bg-yellow-700 text-white"
                 onClick={handleDelete}
               >
                 Eliminar

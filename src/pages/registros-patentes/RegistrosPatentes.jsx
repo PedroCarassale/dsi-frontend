@@ -48,6 +48,7 @@ function RegistrosPatentes() {
     isOpen: false,
     patente: null,
   });
+  const [searchTerm, setSearchTerm] = useState("");
   const [modalForm, setModalForm] = useState({
     isOpen: false,
     patente: null,
@@ -59,6 +60,17 @@ function RegistrosPatentes() {
   const esteAño = patentes.filter(
     (p) => p.year === new Date().getFullYear()
   ).length;
+
+  // Filtrar patentes por búsqueda
+  const patentesFiltradas = patentes.filter((patente) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      patente.title?.toLowerCase().includes(searchLower) ||
+      patente.code?.toLowerCase().includes(searchLower) ||
+      patente.organization?.toLowerCase().includes(searchLower) ||
+      patente.year?.toString().includes(searchLower)
+    );
+  });
 
   const handleVerDetalle = (patente) => {
     setSelectedPatente(patente);
@@ -162,8 +174,10 @@ function RegistrosPatentes() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Buscar patentes..."
+              placeholder="Buscar por título, código, organismo o año..."
               className="pl-10 bg-white border-gray-200"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
@@ -218,13 +232,22 @@ function RegistrosPatentes() {
           Lista de Patentes y Registros
         </h3>
         <span className="text-sm text-gray-500">
-          {patentes.length} registros
+          {patentesFiltradas.length} de {patentes.length} registros
         </span>
       </div>
 
       {/* Lista de Patentes - Cards individuales */}
-      <div className="space-y-4">
-        {patentes.map((patente) => (
+      {patentesFiltradas.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">
+          <Shield className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          <p className="text-lg font-medium mb-2">No hay patentes que coincidan</p>
+          <p className="text-sm">
+            {searchTerm ? "Intenta con otros términos de búsqueda" : "Crea una nueva patente para comenzar"}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {patentesFiltradas.map((patente) => (
           <div
             key={patente.id}
             className="bg-white rounded-lg border border-gray-200 p-6"
@@ -319,8 +342,9 @@ function RegistrosPatentes() {
               </div>
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Modal de confirmación de eliminación */}
       <ModalConfirmacionEliminacion

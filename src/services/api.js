@@ -33,6 +33,14 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Si es 401 (Unauthorized), limpiar el token
+    if (error.response?.status === 401) {
+      console.error("401 Unauthorized - Token inválido o expirado");
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      // Aquí podrías redirigir a login si lo deseas
+    }
+    
     // Formatear el error para que sea consistente
     const formattedError = {
       response: {
