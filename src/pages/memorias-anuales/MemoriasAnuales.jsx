@@ -109,10 +109,9 @@ function MemoriasAnuales() {
   }
 
   // Estadísticas calculadas
+  const currentYear = new Date().getFullYear();
   const totalMemorias = memorias.length;
-  const completadas = memorias.filter(
-    (m) => m.year === new Date().getFullYear()
-  ).length;
+  const completadas = memorias.filter((m) => m.year === currentYear).length;
   const enProgreso = memorias.filter(
     (m) => m.year !== new Date().getFullYear()
   ).length;
