@@ -111,8 +111,8 @@ function MemoriasAnuales() {
   // Estadísticas calculadas
   const currentYear = new Date().getFullYear();
   const totalMemorias = memorias.length;
-  const completadas = memorias.filter((m) => m.year === currentYear).length;
-  const enProgreso = memorias.filter(
+  const enProgreso = memorias.filter((m) => m.year === currentYear).length;
+  const completadas = memorias.filter(
     (m) => m.year !== new Date().getFullYear()
   ).length;
 
@@ -125,12 +125,14 @@ function MemoriasAnuales() {
 
   // Filtrar memorias por búsqueda
   const memoriasFiltradasPorBusqueda = memorias.filter((memoria) => {
+    console.log(memoria)
     const searchLower = searchTerm.toLowerCase();
     return (
       memoria.name?.toLowerCase().includes(searchLower) ||
       memoria.year?.toString().includes(searchLower)
     );
   });
+
 
   return (
     <>
